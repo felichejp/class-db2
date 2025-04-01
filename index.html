@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF8" content="" width="width-device" scale="1.0px">
+        <title>Linea con puntos, by Samuel Mtz</title>
+    </head>
+    <body>
+        <!--El cliente no puede importar las funciones del servidor, solo hace peticiones http a rutas que define el servidor
+        Cuando el cliente le da submit, está actualizando ruta que solicita al servidor. El servidor debe especificar una ruta para
+        manejar esa petición.El cliente hace un post a la ruta especificada en action-->
+        <p>Bienvenido al servidor de Samuel Mtz, ingresa el id de la línea para retornar los puntos que la forman.<br></p>
+        <form method="POST" action="/line">
+            <label for ="line" ></label>
+            <!--El atributo name se utiliza para identificar una entrada de un formulario es la "clave" del JSON-->
+            <input type="text" name ="line">
+            <button type="submit">Enviar</button>
+        </form>
+    </body>
+</html>
