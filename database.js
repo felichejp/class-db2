@@ -18,3 +18,5 @@ function query(text, params, client) {
 }
 
 module.exports = { connect, query };
+
+// commit example
