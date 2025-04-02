@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta de ID</title>
+</head>
+<body>
+    <!--Tenemos un campo de entrada para recibir el ID-->
+    <h2>Ingresa ID</h2> 
+    <input type="text" id="idInput">
+    <button onclick="sendID()">Consultar</button> <!-- Boton para enviar el ID -->
+    <pre id="respuesta"></pre>
+
+    <script>
+        async function sendID() {
+            const id = document.getElementById("idInput").value; //Obteine el ID ingresado
+            const response = await fetch("http://localhost:8080/buscar", { // envia el ID al backend 
+                method: "POST", //peticion postal servidor con fetch()
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ id })
+            });
+
+            const data = await response.json(); //Convierte la respuesta en objeto JSON
+            document.getElementById("respuesta").innerText = JSON.stringify(data, null, 2); //Inserta la respuesta en el <pre id="respuesta">mostrando los datos de la base
+        }
+    </script>
+</body> 
+</html>
+<!--
+Fetch:
+funciond e JavaScript que permite peticiones HTTP a un servidor.
+Se puede ocupar para:
+-Obtener datos de una API
+-enviar datos al servidor
+-Actualizar o eliminar dats del servidor
+
+-->
