@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Way</title>
+</head>
+<body>
+    <p>ID:
+    <input type="text" id="idToSearch">
+    <button onclick="searchID()">Search</button>
+    <pre id="results"></pre>
+    </p>
+
+    <script>
+        async function searchID() {
+            const id = document.getElementById("idToSearch").value;
+            const response = await fetch("http://localhost:8080/search", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ id })
+            });
+            document.getElementById("results").innerText = JSON.stringify(await response.json(), null, 2);
+        }
+    </script>
+</body> 
+</html>
