@@ -1,0 +1,7 @@
+{
+    "name": "osm-postgis-native",
+    "type": "module",
+    "scripts": {
+      "start": "node index.js"
+    }
+  }
