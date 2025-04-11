@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>OSM Way POST Request</title>
+</head>
+<body>
+    <h2>Consultar Way de OSM</h2>
+    <form id="wayForm">
+        <label for="wayId">ID del Way:</label>
+        <input type="number" id="wayId" name="wayId" required>
+        <button type="submit">Consultar</button>
+    </form>
+    
+    <div id="result" style="margin-top: 20px; white-space: pre-wrap;"></div>
+
+    <script>
+        document.getElementById('wayForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const wayId = document.getElementById('wayId').value;
+            
+            try {
+                const response = await fetch('http://localhost:3000/api/ways/points', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ wayId: parseInt(wayId) })
+                });
+                
+                const data = await response.json();
+                document.getElementById('result').textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('result').textContent = 'Error: ' + error.message;
+            }
+        });
+    </script>
+</body>
+</html>
