@@ -3,7 +3,7 @@ const app = express()
 const port = 8000
 
 app.get('/', (req, res) => {
-  res.send('Hello DB2 class second commit!!!')
+  res.send('Hello DB2 class fourth commit!!!')
 })
 
 app.listen(port, () => {
