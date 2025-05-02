@@ -40,4 +40,4 @@ jobs:
             --application-name nodejs-app \
             --deployment-group-name nodejs-app-staging \
             --deployment-config-name CodeDeployDefault.AllAtOnce \
-            --github-location repository=felichejp/class-db2,commitId=430c9525438c02908e19512ae63225038d6493a0
+            --github-location repository=${{ github.repository }},commitId=${{ github.sha }}
