@@ -1,11 +1,19 @@
-const express = require('express'); // Importa Express
-const app = express(); // Crea una instancia de la app
+const express = require('express');
+const pg = require('pg');
+const { connect, query }= require('./database');
+const app = express();
 
-app.get('/', (req, res) => {
-    res.send('¡Hola Mundo!');
+const port = 8080;
+
+app.get('/', async function (req, res){
+    const client = await connect();
+    const r =  await query(
+        'SELECT * FROM planet_osm_line', 
+        client
+    );
+    await client.end();
+    res.send(r);
+
 });
 
-const PORT = 3000; // Configura el puerto
-app.listen(PORT, () => {
-    console.log(`Servidor escuchando en http://localhost:${PORT}`);
-});
+app.listen(8080);
