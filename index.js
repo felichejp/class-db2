@@ -3,7 +3,7 @@ const app = express()
 const port = 8000
 
 app.get('/', (req, res) => {
-  res.send("Quieren papas? atte el Judio(Israel)")
+  res.send("Hola Didocapi(Diego Calderon)")
 })
 
 app.listen(port, () => {
