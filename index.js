@@ -3,7 +3,8 @@ const app = express()
 const port = 8000
 
 app.get('/', (req, res) => {
-  res.send("Hola io como esta?")
+  res.send("Si aparece esto es porque si jaló bien ajua")
+  //esto lo hizo alexis pero no tiene lap
 })
 
 app.listen(port, () => {
