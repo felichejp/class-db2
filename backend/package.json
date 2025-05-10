@@ -1,5 +1,6 @@
 {
   "name": "backend",
+
   "version": "1.0.0",
   "description": "postgresql &amp; nodejs &amp; webpro",
   "main": "index.js",

@@ -8,7 +8,6 @@ const app = express()
 const port = 9000
 app.use(express.json())
 
-
 const client = new pg.Client({
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
