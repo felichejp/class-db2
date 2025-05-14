@@ -47,8 +47,6 @@ if (!req.session.userid) {
   res.send("Wallet amount 1000");
 })
 
-
-
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
