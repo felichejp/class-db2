@@ -1,27 +1,46 @@
-const express = require('express');
-const dotenv = require('dotenv');
-const { connect, query } = require('./database/database');
-dotenv.config();
+const express = require('express') // Importar express
+const pg = require('pg') // Importar pg
+const path = require('path')
+const app = express() // Crear instancia de express
 
-const app = express()
-const port = 9000
-app.use(express.json())
+app.use(express.urlencoded({ extended: true })) // Middleware para parsear formularios
+app.use(express.static(path.join(__dirname, 'public'))) // Servir archivos estáticos
 
-app.post('/auth', async(req, res) => {
-  const { username, password } = req.body;
-  if( !username || !password ) {
-    res.status(400).send("Username and password are required");
-    return;
+// Ruta raíz: muestra el formulario
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'))
+})
+
+// Ruta para recibir el formulario
+app.post('/login', async (req, res) => {
+  const { user, pass } = req.body
+
+  // Validar que los campos no estén vacíos
+  if (!user || !pass) {
+    return res.status(400).send('Usuario y contraseña son requeridos')
   }
-  const client = await connect();
-  const result = await query(client, 'SELECT * FROM users WHERE username = $1', [username]);
-  if (result.rows.length > 0 && result.row[0].isPassOk) {
-    res.send("User authenticated");
-  } else {
-    res.send("User not authenticated");
+
+  // Crear un nuevo cliente de PostgreSQL con las credenciales recibidas
+  const client = new pg.Client({
+    host: 'localhost',
+    port: 5432,
+    user: user,
+    password: pass,
+    database: 'osm'
+  })
+
+  try {
+    await client.connect()
+    // Si conecta, muestra mensaje de éxito
+    res.send('¡Conexión exitosa a la base de datos!')
+  } catch (err) {
+    // Si falla, muestra mensaje de error
+    res.send('Error de conexión: ' + err.message)
+  } finally {
+    await client.end()
   }
 })
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
+app.listen(9000, () => { // Iniciar servidor en el puerto 9000
+  console.log('Servidor corriendo en http://localhost:9000')
 })
