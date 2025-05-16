@@ -17,7 +17,7 @@ app.use(session({
 
 app.get('/', (req, res) => {
   if (req.session.userid) {
-    res.send("Fabian first PR:)")
+    res.send("fer:)")
   } else {
     res.send("Unauthorized");
   }
