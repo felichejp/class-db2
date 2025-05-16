@@ -7,13 +7,16 @@ const app = express()
 const port = 9000
 app.use(express.json())
 
-app.get('/', async (req, res) => {
+app.post('/', async (req, res) => {
+  const { username, password } = req.body;
   const client = await connect();
-  if (!client.connected) {
-    client.connect();
+  const result = await query( 'SELECT * FROM users WHERE username = $1 AND pass = crypt($2, pass);', [username, password], client);
+  console.log('Result:', result.rows);
+  if (result && result.rows.length > 0) {
+    res.send("User authenticated");
+  } else {
+    res.send("User not authenticated");
   }
-  console.log("Connected");
-  client.end();
 })
 
 app.listen(port, () => {
