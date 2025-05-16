@@ -1,11 +1,12 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const pg = require('pg');
+const bcrypt = require('bcrypt');
 
 dotenv.config();
 
 const app = express()
-const port = 9000
+const port = 8000
 app.use(express.json())
 
 const client = new pg.Client({
@@ -16,34 +17,44 @@ const client = new pg.Client({
   database: process.env.DB_DATABASE
 })
 
-app.post('/auth', (req, res) => {
-  const { username, password } = req.body;
+//recibo username y pass
+app.post('/register', async (req, res) => {
+  const { username, pass } = req.body;
   if (!client.connected) {
-    client.connect();
+    await client.connect();
   }
-  if (username === "admin" && password === "admin") {
-    res.send("Login successful");
-  } else {
-    res.send("Login failed");
-  }
+
+  await client.query('INSERT INTO users (username, pass) VALUES ($1, crypt($2, gen_salt(\'bf\')))',[username, pass]);
+  res.send("Usuario registrado exitosamente");
 })
 
+
+app.post('/auth', async (req, res) => {
+  const { username, pass } = req.body;
+  if (!client._connected) {
+    await client.connect();
+  }
+
+  //buscar si el usuario existe
+  const userExist = await client.query('SELECT pass FROM users WHERE username = $1',[username]);
+
+  if (userExist.rows.length === 0) {
+    return res.send("Login failed: usuario no encontrado");
+  }
+
+  //validad contraseña 
+  const password_match = await client.query('SELECT pass = crypt($2, pass) AS password_match FROM users WHERE username = $1',[username, pass]);
+
+  if (password_match.rows[0].password_match) {
+    res.send("Login successful");
+  } else {
+    res.send("Login failed: wrong password");
+  }
+});
+
 app.post('/isUserAuth', async (req, res) => {
-    const { username, password } = req.body;
-    if (!client.connected) {
-      client.connect();
-    }
-    const result = await client.query('SELECT * FROM users WHERE username = $1', [username]);
-    if (result.rows.length > 0) {
-      if (result.rows[0].password === password) {
-        res.send("User authenticated");
-      } else {
-        res.send("User not authenticated");
-      }
-    } else {
-      res.send("User not authenticated");
-    }
-})
+  // yo creo que aqui deberiamos usar lo de los token para una sesion, porque ya hizo la autenticacion en /auth
+});
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
