@@ -1,9 +1,9 @@
 const { Client } = require('pg') // Importar Client de pg
-require('dotenv').config() // Importar configuración de dotenv
+require('dotenv').config() // Importar configuracion de dotenv
 
-// Función para conectar a la base de datos
+// Funcion para conectar a la base de datos
 async function connect () {
-  // Crear instancia de Client con la configuración de dotenv
+  // Crear instancia de Client con la configuracion de dotenv
   const client = new Client({
       host: process.env.DB_HOST,
       port: process.env.DB_PORT,
@@ -16,10 +16,10 @@ async function connect () {
   return client // Retornar cliente
 }
 
-// Función para realizar consultas
-async function query(query, client, params = []) {
+// Funcion para realizar consultas
+async function query(query,  params = [], client) {
   const res = await client.query(query, params) // Realizar consulta
-  return res.rows // Retornar filas de la respuesta
+  return res;// Retornar filas de la respuesta
 }
 
 // Exportar funciones
