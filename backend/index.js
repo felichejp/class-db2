@@ -1,6 +1,6 @@
 const express = require('express');
 const dotenv = require('dotenv');
-const { connect, query } = require('./database/database');
+const { connect, queryAuth } = require('./database/database');
 dotenv.config();
 
 const app = express()
@@ -14,7 +14,7 @@ app.post('/auth', async(req, res) => {
     return;
   }
   const client = await connect();
-  const result = await query(client, 'SELECT * FROM users WHERE username = $1', [username]);
+  const result = await queryAuth(client, { username, password });
   if (result.rows.length > 0 && result.row[0].isPassOk) {
     res.send("User authenticated");
   } else {

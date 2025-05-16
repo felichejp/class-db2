@@ -1,5 +1,6 @@
 const { Client } = require('pg') // Importar Client de pg
 require('dotenv').config() // Importar configuración de dotenv
+const queries = require('./queries.json')
 
 // Función para conectar a la base de datos
 async function connect () {
@@ -17,13 +18,35 @@ async function connect () {
 }
 
 // Función para realizar consultas
-async function query(query, client, params = []) {
+async function queryAuth(client, { username, password }) { response } {
+  const query = queries.find(q => q.name === 'auth').query;
+  const params = [username, password];
   const res = await client.query(query, params) // Realizar consulta
+  if (res.rows.length === 0) {
+    res.response = {
+      status: 401,
+      message: 'Unauthorized',
+      data: null
+    }
+  }
+  if (res.rows[0].isPassOK) {
+    res.response = {
+      status: 200,
+      message: 'Authorized',
+      data: res.rows[0]
+    }
+  } else {
+    res.response = {
+      status: 401,
+      message: 'Unauthorized',
+      data: null
+    }
+  }
   return res.rows // Retornar filas de la respuesta
 }
 
 // Exportar funciones
 module.exports = {
   connect,
-  query
+  queryAuth
 }
