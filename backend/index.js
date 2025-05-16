@@ -13,9 +13,11 @@ app.post('/auth', async(req, res) => {
     res.status(400).send("Username and password are required");
     return;
   }
+   console.log('BODY:', req.body); 
   const client = await connect();
-  const result = await query(client, 'SELECT * FROM users WHERE username = $1', [username]);
-  if (result.rows.length > 0 && result.row[0].isPassOk) {
+  const result = await query( 'SELECT * FROM users WHERE username = $1 AND password = crypt($2, password);', [username,password],client);
+  console.log('RESULT:', result.rows);
+  if (result && result.rows.length > 0) {
     res.send("User authenticated");
   } else {
     res.send("User not authenticated");
