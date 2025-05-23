@@ -28,6 +28,74 @@ app.post('/auth', (req, res) => {
   }
 })
 
+app.post('/login', async (req, res) => {
+  const { user, password } = req.body;
+
+  if (!user || !password) {
+    return res.status(400).send("login incorrecto");
+  }
+
+  try {
+    if (!client._connected) {
+      await client.connect();
+      client._connected = true;
+    }
+
+    const query = `
+      SELECT
+        crypt($1, p.password) = p.password AS ispassok
+      FROM users u
+      JOIN passwords p ON u.id = p.iduser
+      WHERE u."user" = $2
+    `;
+
+    const result = await client.query(query, [password, user]);
+
+    if (result.rows.length > 0 && result.rows[0].ispassok === true) {
+      res.send("login correcto");
+    } else {
+      res.send("login incorrecto");
+    }
+
+  } catch (err) {
+    res.send("login incorrecto");
+  }
+});
+
+
+app.post('/register', async (req, res) => {
+  const { user, name, lastname, password } = req.body;
+
+  if (!user || !name || !lastname || !password) {
+    return res.status(400).send("registro fallido");
+  }
+
+  try {
+    if (!client._connected) {
+      await client.connect();
+      client._connected = true;
+    }
+    const insertUserQuery = `
+      INSERT INTO users ("user", name, lastname)
+      VALUES ($1, $2, $3) RETURNING id
+    `;
+    const userResult = await client.query(insertUserQuery, [user, name, lastname]);
+    const userId = userResult.rows[0].id;
+    const insertPasswordQuery = `
+      INSERT INTO passwords (iduser, password)
+      VALUES ($1, crypt($2, gen_salt('md5')))
+    `;
+    await client.query(insertPasswordQuery, [userId, password]);
+
+    res.send("registro exitoso");
+
+  } catch (err) {
+    res.send("registro fallido");
+  }
+});
+
+
+
 app.post('/isUserAuth', async (req, res) => {
     const { username, password } = req.body;
     if (!client.connected) {
