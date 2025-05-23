@@ -4,6 +4,9 @@ const session = require('express-session');
 const app = express()
 const port = 8000
 
+// Add middleware to parse form data
+app.use(express.urlencoded({ extended: true }));
+
 app.use(session({
   secret: 'secret',
   resave: true,

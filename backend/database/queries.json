@@ -1,7 +1,0 @@
-[
-    {
-        "name": "auth",
-        "query": "SELECT u.id, u.name, u.rol, crypt($2, p.password) = p.password AS isPassOK FROM users u JOIN passwords p ON u.id = p.idUser WHERE u.'user' = $1;"
-
-    }
-]
