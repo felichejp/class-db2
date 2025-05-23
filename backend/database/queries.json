@@ -1,0 +1,6 @@
+[
+    {
+        "name": "auth",
+        "query": "SELECT u.id, u.name, u.rol FROM users u JOIN passwords p ON u.id = p.iduser WHERE u.\"user\" = $1 AND p.password = crypt($2, p.password);"
+    }
+]
