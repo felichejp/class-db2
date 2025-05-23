@@ -16,4 +16,16 @@ app.get('/', async function (req, res){
 
 });
 
+app.use(express.json());
+
+app.post('/login', async (req, res) => {
+    const { email, password } = req.body;
+    res.json({ message: `Login recibido para ${email}` });
+});
+
+app.post('/register', async (req, res) => {
+    const { nombre, apellido, email, password } = req.body;
+    res.json({ message: `Registro recibido para ${nombre} ${apellido}` });
+});
+
 app.listen(8080);
