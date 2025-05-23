@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Registro</title>
+</head>
+<body>
+  <nav class="login-nav">
+    <div class="nav-links">
+      <a href="/login">Iniciar Sesión</a>
+      <a href="#" class="active">Registrarse</a>
+    </div>
+  </nav>
+
+  <div class="login-container">
+    <div class="login-form-container">
+      <div class="login-form-card">
+        <h2>Registrarse</h2>
+        <form action="/registro" method="POST">
+          <div class="form-group">
+            <label for="name">Nombre</label>
+            <input type="text" id="name" name="name" placeholder="Ingrese su nombre" required />
+          </div>
+
+          <div class="form-group">
+            <label for="lastname">Apellido</label>
+            <input type="text" id="lastname" name="lastname" placeholder="Ingrese su apellido" required />
+          </div>
+
+          <div class="form-group">
+            <label for="username">Nombre de Usuario</label>
+            <input type="text" id="username" name="username" placeholder="Ingrese un nombre de usuario" required />
+          </div>
+
+          <div class="form-group">
+            <label for="password">Contraseña</label>
+            <input type="password" id="password" name="password" placeholder="Cree una contraseña" required />
+          </div>
+
+          <div class="form-group">
+            <label for="confirm_password">Confirmar Contraseña</label>
+            <input type="password" id="confirm_password" name="confirm_password" placeholder="Repita la contraseña" required />
+          </div>
+
+          <button type="submit" class="login-button">Registrarse</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <style scoped>
+    /* Reutiliza tus estilos de login */
+    .login-container {
+      font-family: Arial, sans-serif;
+      height: 100vh;
+      background-color: #7bfae1;
+      margin: 0;
+      padding: 0;
+    }
+
+    .login-form-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: calc(100vh - 60px);
+    }
+
+    .login-form-card {
+      background-color: rgb(241, 193, 193);
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      padding: 2rem;
+      width: 100%;
+      max-width: 400px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      color: #333;
+    }
+
+    .form-group {
+      margin-bottom: 1.2rem;
+    }
+
+    label {
+      display: block;
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+      color: #555;
+    }
+
+    input[type="text"],
+    input[type="password"],
+    input[type="email"] {
+      width: 100%;
+      padding: 0.8rem;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 1rem;
+      transition: border-color 0.3s;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #3498db;
+    }
+
+    .login-button {
+      width: 100%;
+      padding: 0.8rem;
+      background-color: #a83eff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .login-button:hover {
+      background-color: #295eb9;
+    }
+
+    .nav-links {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      padding: 1rem;
+      background-color: #fff;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .nav-links a.active {
+      color: #a83eff;
+    }
+  </style>
+</body>
+</html>
