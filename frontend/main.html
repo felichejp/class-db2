@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ROBCO INDUSTRIES UNIFIED OPERATING SYSTEM</title>
+    <style>
+        body {
+            background-color: #000;
+            color: #00ff00;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .terminal {
+            background-color: #000;
+            border: 2px solid #00ff00;
+            padding: 2rem;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 0 15px #00ff00;
+        }
+        h1 {
+            font-size: 1.2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.3rem;
+        }
+        input {
+            width: 100%;
+            background-color: black;
+            border: 1px solid #00ff00;
+            color: #00ff00;
+            padding: 0.5rem;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1rem;
+        }
+        button {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: black;
+            border: 1px solid #00ff00;
+            color: #00ff00;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #003300;
+        }
+        .error-message {
+            color: red;
+            text-align: center;
+            margin-bottom: 1rem;
+            display: none;
+        }
+        .green-glow {
+            text-shadow: 0 0 5px #00ff00, 0 0 10px #00ff00;
+        }
+        .ascii-header {
+            font-size: 0.85rem;
+            white-space: pre;
+            margin-bottom: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="terminal">
+        <div class="ascii-header green-glow">
+ROBCO INDUSTRIES UNIFIED OPERATING SYSTEM
+- Server 6 - 
+> Welcome, user.
+        </div>
+        <div id="errorMessage" class="error-message"></div>
+        <form action="/login" method="POST">
+            <div class="form-group">
+                <label for="username" class="green-glow">Username:</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password" class="green-glow">Password:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit" class="green-glow">> ENTER</button>
+        </form>
+    </div>
+
+    <script>
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const error = urlParams.get('error');
+            if (error) {
+                const errorElement = document.getElementById('errorMessage');
+                errorElement.textContent = error;
+                errorElement.style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>
