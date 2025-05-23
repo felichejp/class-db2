@@ -19,7 +19,7 @@ async function connect () {
 // Función para realizar consultas
 async function query(query, client, params = []) {
   const res = await client.query(query, params) // Realizar consulta
-  return res.rows // Retornar filas de la respuesta
+  return res // Retornar resultado
 }
 
 // Exportar funciones
