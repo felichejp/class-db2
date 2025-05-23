@@ -26,10 +26,9 @@ async function query(client, query, params = [])
 {
     //await measn async await
     const result = await client.query(query, params);
-    console.log(result.rows);
-    return result.rows;	// El resultado de la consulta tiene
-                // varios metadatos, tiempo de conexión, etc
-                //Solo una parte son los registros
+ // La respuesta entrega en rows un arreglo de objetos, donde cada una es un registro coincidente
+ // tiene más metadatos
+    return result.rows;	
 }
 
 // Exportar las funciones, en forma de objeto
