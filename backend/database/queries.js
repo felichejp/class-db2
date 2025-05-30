@@ -10,7 +10,7 @@ const queries = [
           crypt($2, p.password) = p.password AS ispassok
       FROM users u
       INNER JOIN passwords p ON u.id = p.idUser
-      WHERE u.user_name = $1
+      WHERE u.email = $1
       ORDER BY p.id DESC
       LIMIT 1
       ;

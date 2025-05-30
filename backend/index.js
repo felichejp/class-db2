@@ -11,13 +11,13 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
 
 app.post('/login', async(req, res) => {
-  const { username, password } = req.body;
-  if( !username || !password ) {
+  const { email, password } = req.body;
+  if( !email || !password ) {
     res.status(400).send("Username and password are required");
     return;
   }
   const client = await connect();
-  const result = await queryLogin(client, { username, password });
+  const result = await queryLogin(client, { email, password });
   if (result && result.status === 200) {
     res.send(result);
   } else {

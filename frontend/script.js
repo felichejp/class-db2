@@ -1,5 +1,5 @@
 // URL base del backend
-const BASE_URL = 'http://localhost:8081';
+const BASE_URL = 'http://localhost:9000';
 
 // Función para mostrar mensajes
 function mostrarMensaje(elementoId, mensaje, esError = false) {
@@ -135,6 +135,7 @@ async function iniciarSesion(event) {
     };
     
     try {
+        console.log('Iniciando sesión', datosLogin);
         // Realizar llamada POST al backend
         const response = await fetch(`${BASE_URL}/login`, {
             method: 'POST',
@@ -145,6 +146,7 @@ async function iniciarSesion(event) {
         });
         
         const resultado = await response.json();
+        console.log('Resultado de la petición', resultado);
         
         if (response.ok) {
             // Login exitoso
