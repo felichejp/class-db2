@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión</title>
+</head>
+<body>
+    <h1>Iniciar Sesión</h1>
+    
+    <form id="loginForm">
+        <table border="1">
+            <tr>
+                <td><label for="loginEmail">Email:</label></td>
+                <td><input type="email" id="loginEmail" name="loginEmail" required></td>
+            </tr>
+            <tr>
+                <td><label for="loginPassword">Password:</label></td>
+                <td><input type="password" id="loginPassword" name="loginPassword" required></td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <button type="submit">Iniciar Sesión</button>
+                    <button type="button" onclick="limpiarLogin()">Limpiar</button>
+                </td>
+            </tr>
+        </table>
+    </form>
+    
+    <div id="mensajeLogin"></div>
+    
+    <br>
+    <a href="index.html">
+        <button type="button">Volver al Inicio</button>
+    </a>
+    
+    <br><br>
+    <a href="registro.html">
+        <button type="button">¿No tienes cuenta? Registrarse</button>
+    </a>
+    
+    <script src="script.js"></script>
+</body>
+</html>

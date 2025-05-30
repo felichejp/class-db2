@@ -1,6 +1,5 @@
 {
   "name": "backend",
-
   "version": "1.0.0",
   "description": "postgresql &amp; nodejs &amp; webpro",
   "main": "index.js",
@@ -12,6 +11,7 @@
   "author": "felichito",
   "license": "ISC",
   "dependencies": {
+    "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "pg": "^8.15.6"

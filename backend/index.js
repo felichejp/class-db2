@@ -1,10 +1,12 @@
 const express = require('express');
 const dotenv = require('dotenv');
+const cors = require('cors');
 const { connect, queryLogin, queryNewUser } = require('./database/database');
 dotenv.config();
 
 const app = express()
 const port = 9000
+app.use(cors({ origin: '*' }));
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
 

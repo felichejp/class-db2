@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Usuario</title>
+</head>
+<body>
+    <h1>Registro de Nuevo Usuario</h1>
+    
+    <form id="registroForm">
+        <table border="1">
+            <tr>
+                <td><label for="username">Username:</label></td>
+                <td><input type="text" id="username" name="username" required></td>
+            </tr>
+            <tr>
+                <td><label for="nombre">Nombre:</label></td>
+                <td><input type="text" id="nombre" name="nombre" required></td>
+            </tr>
+            <tr>
+                <td><label for="apellido">Apellido:</label></td>
+                <td><input type="text" id="apellido" name="apellido" required></td>
+            </tr>
+            <tr>
+                <td><label for="email">Email:</label></td>
+                <td><input type="email" id="email" name="email" required></td>
+            </tr>
+            <tr>
+                <td><label for="password">Password:</label></td>
+                <td><input type="password" id="password" name="password" required></td>
+            </tr>
+            <tr>
+                <td><label for="repetirPassword">Repetir Password:</label></td>
+                <td><input type="password" id="repetirPassword" name="repetirPassword" required></td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <button type="submit">Registrar Usuario</button>
+                    <button type="button" onclick="limpiarFormulario()">Limpiar</button>
+                </td>
+            </tr>
+        </table>
+    </form>
+    
+    <div id="mensaje"></div>
+    
+    <br>
+    <a href="index.html">
+        <button type="button">Volver al Inicio</button>
+    </a>
+    
+    <br><br>
+    <a href="login.html">
+        <button type="button">¿Ya tienes cuenta? Iniciar Sesión</button>
+    </a>
+    
+    <script src="script.js"></script>
+</body>
+</html>
