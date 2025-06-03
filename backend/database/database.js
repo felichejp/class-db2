@@ -10,10 +10,8 @@ async function connect () {
       port: process.env.DB_PORT,
       user: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
-      database: process.env.DB_DATABASE,
-      ssl: {
-        rejectUnauthorized: false
-      }
+      database: process.env.DB_NAME,
+      ssl: false
   });
   await client.connect() // Conectar a la base de datos
   console.log('Conneted to database') // Mostrar mensaje en consola
@@ -21,18 +19,20 @@ async function connect () {
 }
 
 // Función para realizar consultas
-async function queryLogin(client, { username, password }) {
+async function queryLogin(client, {email, password }) {
   const query = queries.find(q => q.name === 'login').query;
-  const params = [username, password];
+  const params = [email, password];
   const res = await client.query(query, params) // Realizar consulta
-  if (res.rows && res.rows.length === 0) {
+  // No hay registros coincidentes
+  if (res.rows.length === 0) {
     response = {
       status: 401,
-      message: 'Unauthorized',
+      message: 'Sin registros coincidentes',
       data: null
     }
     return response;
   }
+  // Contraseña correcta
   if (res.rows[0].ispassok) {
     response = {
       status: 200,
@@ -50,35 +50,57 @@ async function queryLogin(client, { username, password }) {
   }
 }
 
-async function queryNewUser(client, { username, password, name, lastname, rol }) {
+async function queryNewUser(client, { username,rol, name, lastname, email, password}) {
+  
+  //Consulta para crear el usuario
   const query = queries.find(q => q.name === 'create_user').query;
-  const params = [username, rol, name, lastname];
+  const params = [username, rol, name, lastname, email];
   const res = await client.query(query, params);
-  if (res.rows && res.rows.length === 0) {
+
+  // Consulta para obtener el id del usuario recién creado
+   const query2 = queries.find(q => q.name === 'get_id_user_created').query;
+   const params2 = [name]
+  const res2 = await client.query(query2, params2);
+
+  // Si no hay registro del usuario creado, error 
+  if (res2.rows && res2.rows.length === 0) {
     response = {
       status: 401,
-      message: 'Unauthorized',
+      message: 'Error al crear el usuario',
       data: null
     }
     return response;
   }
+
+  // Consulta para crear la contraseña
+  const countFail = 0   // Intentos fallidos por defecto
   const queryPassword = queries.find(q => q.name === 'create_password').query;
-  const paramsPassword = [res.rows[0].id, password];
+  const paramsPassword = [res2.rows[0].iduser, password, countFail];
   const resPassword = await client.query(queryPassword, paramsPassword);
-  if (resPassword.rows && resPassword.rows.length === 0) {
+  
+  // Consulta para verificar la creación de contraseña
+  const queryPassword2 = queries.find(q => q.name === 'verify_created_password').query;
+  const paramsPassword2 = [res2.rows[0].iduser];
+  const resPassword2 = await client.query(queryPassword2, paramsPassword2);
+  
+  
+  if (resPassword2.rows && resPassword2.rows.length === 0) {
     response = {
       status: 401,
-      message: 'Unauthorized',
+      message: 'Error al crear la contraseña',
       data: null
     }
     return response;
   }
-  response = {
+  else
+  {
+      response = {
     status: 200,
     message: 'User created',
     data: res.rows[0]
   }
   return response;
+  }
 }
 
 // Exportar funciones

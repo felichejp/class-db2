@@ -40,14 +40,14 @@ async function registrarUsuario(event) {
     
     // Obtener valores del formulario
     const username = document.getElementById('username').value.trim();
-    const nombre = document.getElementById('nombre').value.trim();
-    const apellido = document.getElementById('apellido').value.trim();
+    const name = document.getElementById('nombre').value.trim();
+    const lastname = document.getElementById('apellido').value.trim();
     const email = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value;
     const repetirPassword = document.getElementById('repetirPassword').value;
     
     // Validaciones del lado del cliente
-    if (!username || !nombre || !apellido || !email || !password || !repetirPassword) {
+    if (!username || !name || !lastname || !email || !password || !repetirPassword) {
         mostrarMensaje('mensaje', 'Todos los campos son obligatorios', true);
         return;
     }
@@ -73,8 +73,8 @@ async function registrarUsuario(event) {
     // Preparar datos para enviar al backend
     const datosUsuario = {
         username: username,
-        nombre: nombre,
-        apellido: apellido,
+        name: name,
+        lastname: lastname,
         email: email,
         password: password
     };
@@ -90,7 +90,7 @@ async function registrarUsuario(event) {
         });
         
         const resultado = await response.json();
-        
+        //console.log(response)
         if (response.ok) {
             // Registro exitoso
             mostrarMensaje('mensaje', resultado.message || 'Usuario registrado exitosamente. Ya puedes iniciar sesión.');
@@ -135,6 +135,8 @@ async function iniciarSesion(event) {
     };
     
     try {
+
+        // Datos de entrada
         console.log('Iniciando sesión', datosLogin);
         // Realizar llamada POST al backend
         const response = await fetch(`${BASE_URL}/login`, {
@@ -145,10 +147,11 @@ async function iniciarSesion(event) {
             body: JSON.stringify(datosLogin)
         });
         
+        // Datos de respuesta
         const resultado = await response.json();
         console.log('Resultado de la petición', resultado);
         
-        if (response.ok) {
+        if (resultado.status === 200) {
             // Login exitoso
             const mensaje = resultado.user ? 
                 `Bienvenido ${resultado.user.nombre} ${resultado.user.apellido} (${resultado.user.username})` :
