@@ -23,7 +23,8 @@ app.use(session({
 
 app.get('/', (req, res) => {
   if (req.session.userid) {
-    res.send("¡Bienvenido! " + req.session.userid);
+    // Redirigir a la página de bienvenida con el nombre de usuario
+    res.sendFile(path.join(__dirname, 'inicio.html'));
   } else {
     res.sendFile(path.join(__dirname, 'main.html'));
   }
@@ -45,19 +46,52 @@ app.post('/login', async (req, res) => {
     
     if (response.data === "User authenticated") {
       req.session.userid = username;
-      res.redirect('/');
+      res.redirect('/?username=' + encodeURIComponent(username));
     } else {
-      res.status(401).render('main.html', { error: 'Invalid credentials' });
+      res.status(401).redirect('/login?error=Credenciales+inválidas');
     }
   } catch (error) {
     console.error('Login error:', error);
-    res.status(500).render('main.html', { error: 'Login failed: Server error' });
+    res.status(500).redirect('/login?error=Error+del+servidor');
   }
 });
 
 app.get('/login', (req, res) => {
   res.sendFile(path.join(__dirname, 'main.html'));
 })
+
+app.get('/register', (req, res) => {
+  res.sendFile(path.join(__dirname, 'register.html'));
+});
+
+app.post('/register', async (req, res) => {
+  try {
+    const { username, firstName, lastName, email, password } = req.body;
+    
+    const response = await axios.post('http://localhost:9000/register', {
+      username,
+      firstName,
+      lastName,
+      email,
+      password
+    });
+    
+    if (response.data === "User registered successfully") {
+      res.redirect('/login?message=Registration+successful.+Please+login.');
+    } else {
+      res.redirect('/register?error=Registration+failed');
+    }
+  } catch (error) {
+    console.error('Registration error:', error);
+    let errorMessage = 'Registration failed: Server error';
+    
+    if (error.response) {
+      errorMessage = error.response.data;
+    }
+    
+    res.redirect(`/register?error=${encodeURIComponent(errorMessage)}`);
+  }
+});
 
 app.get('/private', (req, res) => {
   if (!req.session.username) {
