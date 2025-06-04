@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             const email = loginForm.querySelector('input[type="text"]').value;
             const password = loginForm.querySelector('input[type="password"]').value;
-            const res = await fetch('/login', {
+            const res = await fetch('http:localhost:9000/login', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ email, password })
@@ -26,13 +26,18 @@ document.addEventListener('DOMContentLoaded', () => {
             const apellido = inputs[1].value;
             const email = inputs[2].value;
             const password = inputs[3].value;
-            const res = await fetch('/register', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ nombre, apellido, email, password })
-            });
-            const data = await res.json();
-            alert(data.message || JSON.stringify(data));
+            try {
+                const res = await fetch('http://localhost:9000/register', { // Cambiar URL al backend
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: email, password, name: nombre, lastname: apellido, rol: 'user' })
+                });
+                const data = await res.json();
+                alert(data.message || JSON.stringify(data));
+            } catch (error) {
+                console.error('Error en registro:', error);
+                alert('Error al registrarse');
+            }
         });
     }
 });

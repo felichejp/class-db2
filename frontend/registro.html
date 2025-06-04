@@ -12,22 +12,30 @@
         <div class="container">
             <div class="wrapper">
                 <div class="title"><span>Registro</span></div>
-                <form action="#">
+                <form action="#" id="registerForm">
                     <div class="row">
                         <i class="bi bi-person"></i>
-                        <input type="text" placeholder="Nombre" required>
+                        <input type="text" name="nombre" placeholder="Nombre" required>
                     </div>
                     <div class="row">
                         <i class="bi bi-person"></i>
-                        <input type="text" placeholder="Apellido" required>
+                        <input type="text" name="Apellido" placeholder="Apellido" required>
                     </div>
                     <div class="row">
                         <i class="bi bi-envelope"></i>
-                        <input type="email" placeholder="Correo electrónico" required>
+                        <input type="email" name="email" placeholder="Correo electrónico" required>
                     </div>
                     <div class="row">
                         <i class="bi bi-lock"></i>
-                        <input type="password" placeholder="Contraseña" required>
+                        <input type="password" name="password" placeholder="Contraseña" required>
+                    </div>
+                    <div class="row">
+                        <i class="bi bi-person-badge"></i>
+                        <select name="rol" required>
+                            <option value="" disabled selected>Selecciona un rol</option>
+                            <option value="user">Usuario</option>
+                            <option value="admin">Administrador</option>
+                        </select>
                     </div>
                     <div class="row button">
                         <input type="submit" value="Registrarse">
