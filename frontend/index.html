@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Base de Datos II</title>
+    <style>
+        body {
+            background-color: #000;
+            color: #00ff00;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .terminal {
+            background-color: #000;
+            border: 2px solid #00ff00;
+            padding: 2rem;
+            width: 100%;
+            max-width: 700px;
+            box-shadow: 0 0 15px #00ff00;
+        }
+        h1, h2, p, footer {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        h1, h2 {
+            font-size: 1.2rem;
+        }
+        button {
+            padding: 0.75rem;
+            background-color: black;
+            border: 1px solid #00ff00;
+            color: #00ff00;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1rem;
+            cursor: pointer;
+            margin: 0.25rem;
+        }
+        button:hover {
+            background-color: #003300;
+        }
+        .green-glow {
+            text-shadow: 0 0 5px #00ff00, 0 0 10px #00ff00;
+        }
+        a {
+            display: inline-block;
+            text-align: center;
+        }
+        hr {
+            border-color: #00ff00;
+        }
+    </style>
+</head>
+<body>
+    <div class="terminal">
+        <h1 class="green-glow">Bienvenido al registro de usuarios de Base de Datos II - Proyecto 1</h1>
+        
+        <h2 class="green-glow">Accede a tu cuenta</h2>
+        <p>Si ya tienes una cuenta, puedes iniciar sesión aquí:</p>
+        <a href="login.html">
+            <button type="button" class="green-glow">Iniciar Sesión</button>
+        </a>
+        
+        <h2 class="green-glow">¿Eres un usuario nuevo?</h2>
+        <p>Si es tu primera vez, regístrate para crear tu cuenta:</p>
+        <a href="registro.html">
+            <button type="button" class="green-glow">Registrarse</button>
+        </a>
+        
+        <hr>
+        <footer>
+            <p>© 2025 FIE DB2</p>
+        </footer>
+    </div>
+</body>
+</html>

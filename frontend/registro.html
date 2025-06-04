@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Usuario</title>
+    <style>
+        body {
+            background-color: #000;
+            color: #00ff00;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .terminal {
+            background-color: #000;
+            border: 2px solid #00ff00;
+            padding: 2rem;
+            width: 100%;
+            max-width: 700px;
+            box-shadow: 0 0 15px #00ff00;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1rem;
+        }
+        table, td {
+            border: 1px solid #00ff00;
+        }
+        td {
+            padding: 0.5rem;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.3rem;
+        }
+        input {
+            width: 100%;
+            background-color: black;
+            border: 1px solid #00ff00;
+            color: #00ff00;
+            padding: 0.5rem;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1rem;
+        }
+        button {
+            padding: 0.75rem;
+            background-color: black;
+            border: 1px solid #00ff00;
+            color: #00ff00;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1rem;
+            cursor: pointer;
+            margin: 0.25rem;
+            width: 48%;
+        }
+        button:hover {
+            background-color: #003300;
+        }
+        .green-glow {
+            text-shadow: 0 0 5px #00ff00, 0 0 10px #00ff00;
+        }
+        a {
+            display: inline-block;
+            text-align: center;
+            margin: 0.5rem 0;
+        }
+        #mensaje {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="terminal">
+        <h1 class="green-glow">Registro de Nuevo Usuario</h1>
+        
+        <form id="registroForm">
+            <table>
+                <tr>
+                    <td><label for="username">Username:</label></td>
+                    <td><input type="text" id="username" name="username" required></td>
+                </tr>
+                <tr>
+                    <td><label for="nombre">Nombre:</label></td>
+                    <td><input type="text" id="nombre" name="nombre" required></td>
+                </tr>
+                <tr>
+                    <td><label for="apellido">Apellido:</label></td>
+                    <td><input type="text" id="apellido" name="apellido" required></td>
+                </tr>
+                <tr>
+                    <td><label for="email">Email:</label></td>
+                    <td><input type="email" id="email" name="email" required></td>
+                </tr>
+                <tr>
+                    <td><label for="password">Password:</label></td>
+                    <td><input type="password" id="password" name="password" required></td>
+                </tr>
+                <tr>
+                    <td><label for="repetirPassword">Repetir Password:</label></td>
+                    <td><input type="password" id="repetirPassword" name="repetirPassword" required></td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="text-align: center;">
+                        <button type="submit" class="green-glow">Registrar Usuario</button>
+                        <button type="button" onclick="limpiarFormulario()" class="green-glow">Limpiar</button>
+                    </td>
+                </tr>
+            </table>
+        </form>
+        
+        <div id="mensaje" class="green-glow"></div>
+        
+        <a href="index.html">
+            <button type="button" class="green-glow">Volver al Inicio</button>
+        </a>
+        
+        <a href="login.html">
+            <button type="button" class="green-glow">¿Ya tienes cuenta? Iniciar Sesión</button>
+        </a>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
