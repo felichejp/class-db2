@@ -73,10 +73,11 @@ async function registrarUsuario(event) {
     // Preparar datos para enviar al backend
     const datosUsuario = {
         username: username,
-        nombre: nombre,
-        apellido: apellido,
+        name: nombre,
+        lastname: apellido,
         email: email,
-        password: password
+        password: password,
+        rol: 1
     };
     
     try {

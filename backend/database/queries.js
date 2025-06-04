@@ -1,12 +1,13 @@
 const queries = [
   {
     name: 'login',
-    description: 'Authenticate user with username and password',
+    description: 'Authenticate user with email and password',
     query: `
       SELECT
           u.id,
-          u.user_name,
+          u.user,
           u.name,
+          u.email,
           crypt($2, p.password) = p.password AS ispassok
       FROM users u
       INNER JOIN passwords p ON u.id = p.idUser
@@ -20,14 +21,14 @@ const queries = [
     name: 'create_user',
     description: 'Create a new user',
     query: `
-      INSERT INTO users (user_name, rol, name, lastname) VALUES ($1, $2, $3, $4);
+      INSERT INTO users ("user", rol, name, lastname,email) VALUES ($1, $2, $3, $4, $5) RETURNING id;
     `
   },
   {
     name: 'create_password',
     description: 'Create a new password',
     query: `
-      INSERT INTO passwords (idUser, password) VALUES ($1, $2));
+      INSERT INTO passwords (idUser, password) VALUES ($1, crypt($2, gen_salt('des')));
     `
   },
   {
