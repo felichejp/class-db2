@@ -21,9 +21,9 @@ async function connect () {
 }
 
 // Función para realizar consultas
-async function queryLogin(client, { username, password }) {
+async function queryLogin(client, { email, password }) {
   const query = queries.find(q => q.name === 'login').query;
-  const params = [username, password];
+  const params = [email, password];
   const res = await client.query(query, params) // Realizar consulta
   if (res.rows && res.rows.length === 0) {
     response = {

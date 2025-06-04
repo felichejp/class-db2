@@ -41,7 +41,7 @@ const queries = [
     name: 'create_token',
     description: 'Create a new token',
     query: `
-      INSERT INTO tokens (idUser, token) VALUES ($1, $2);
+      INSERT INTO tokens (idUser, token, expires) VALUES ($1, $2, $3);
     `
   },
   {
