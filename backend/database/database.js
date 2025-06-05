@@ -28,7 +28,8 @@ async function queryLogin(client, {email, password }) {
     response = {
       status: 401,
       message: 'Sin registros coincidentes',
-      data: null
+      data: null,
+      token:undefined
     }
     return response;
   }
@@ -37,14 +38,16 @@ async function queryLogin(client, {email, password }) {
     response = {
       status: 200,
       message: 'Authorized',
-      data: res.rows[0]
+      data: res.rows[0],
+      token: undefined  // Se rellena el token por el servidor backend, cuando le llegue un 200 code
     }
     return response;
   } else {
     response = {
       status: 401,
       message: 'Unauthorized',
-      data: null
+      data: null,
+      token: undefined
     }
     return response;
   }

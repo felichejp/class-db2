@@ -124,7 +124,7 @@ async function iniciarSesion(event) {
         return;
     }
     
-    // Mostrar loading
+    // Mostrar loading (se podría quitar)
     mostrarLoading('mensajeLogin');
     await new Promise(resolve => setTimeout(resolve, 2000));
     
@@ -152,9 +152,9 @@ async function iniciarSesion(event) {
         console.log('Resultado de la petición', resultado);
         
         if (resultado.status === 200) {
-            // Login exitoso
-            const mensaje = resultado.user ? 
-                `Bienvenido ${resultado.user.nombre} ${resultado.user.apellido} (${resultado.user.username})` :
+            // Login exitoso, el atributo data tiene el registro de la consulta
+            const mensaje = resultado.data ? 
+                `Bienvenido ${resultado.data.name}, inicio de sesión exitoso, ya tienes tu token!` :
                 'Inicio de sesión exitoso';
             
             mostrarMensaje('mensajeLogin', mensaje);
