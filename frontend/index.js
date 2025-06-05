@@ -67,5 +67,6 @@ app.get('/wallet', (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Frontend corriendo en http://localhost:${port}`);
+  console.log(`Example app listening on port ${port}`);
 });
+

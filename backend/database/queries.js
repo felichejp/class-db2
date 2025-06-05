@@ -19,7 +19,7 @@ const queries = [
     name: 'create_user',
     description: 'Create a new user',
     query: `
-      INSERT INTO users (username, rol, name, lastname) VALUES ($1, $2, $3, $4);
+      INSERT INTO users (username, rol, name, lastname) VALUES ($1, $2, $3, $4) RETURNING id;
     `
   },
   {
@@ -40,7 +40,7 @@ const queries = [
     name: 'create_token',
     description: 'Create a new token',
     query: `
-      INSERT INTO tokens (idUser, token) VALUES ($1, $2);
+      INSERT INTO tokens (idUser, token, expires) VALUES ($1, $2, $3);
     `
   },
   {
