@@ -78,7 +78,7 @@ async function registrarUsuario(event) {
         email: email,
         password: password
     };
-    
+
     try {
         // Realizar llamada POST al backend
         const response = await fetch(`${BASE_URL}/register`, {
@@ -142,7 +142,9 @@ async function iniciarSesion(event) {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(datosLogin)
+           
+            body: JSON.stringify(datosLogin),
+             credentials: 'include'
         });
         
         const resultado = await response.json();

@@ -11,7 +11,11 @@ dotenv.config();
 
 const app = express()
 const port = 9000
-app.use(cors({ origin: '*' }));
+//app.use(cors({ origin: '*' }));
+app.use(cors({
+  origin: 'http://127.0.0.1:5500', // O el que te muestre Live Server
+  credentials: true
+}));
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -27,8 +31,8 @@ app.post('/login', async(req, res) => {
 
   if (result && result.status === 200) {
     const token = jwt.sign({ id: result.data.id }, secretKey, { expiresIn: '1h' });
-    console.log(token);
-    res.cookie('token', token, { httpOnly: true, secure: true, maxAge: 3600000 });
+    console.log('Token generado',token);
+    res.cookie('token', token, { httpOnly: true, secure: false, maxAge: 3600000 });
     res.send(result);
   } else {
     res.send(result);
@@ -43,9 +47,9 @@ app.post('/protected', async(req, res) => {
   }
   try {
     const decoded = jwt.verify(token, secretKey);
-    res.send(`Welcome ${decoded.id}`);
+    res.send(`Welcome user with ID: ${decoded.id}`);
   } catch (err) {
-    res.status(401).send("Unauthorized");
+    res.status(401).send("Unauthorized - Token invalido");
   }
 });
 
