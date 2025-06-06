@@ -10,7 +10,7 @@ app.use(session({
   resave: true,
   saveUninitialized: false,
   cookie: {
-    maxAge: 1000 * 60 * 5,
+    maxAge: 1000 * 60 * 60 * 24, // 24 hours
     httpOnly: true,
     secure: false
   }
@@ -29,6 +29,11 @@ app.get('/register', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'register.html'));
 });
 
+// Ruta del dashboard
+app.get('/dashboard', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
+});
+
 // Ruta de logout
 app.get('/logout', (req, res) => {
     req.session.destroy();
@@ -38,7 +43,3 @@ app.get('/logout', (req, res) => {
 app.listen(port, () => {
     console.log(`Frontend server running at http://localhost:${port}`);
 });
-
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
-})

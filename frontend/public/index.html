@@ -122,6 +122,24 @@
     </div>
 
     <script>
+        // Check if user is already authenticated when page loads
+        window.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const response = await fetch('http://localhost:9000/check-auth', {
+                    method: 'GET',
+                    credentials: 'include' // Include cookies
+                });
+                const data = await response.json();
+                
+                if (data.success && data.authenticated) {
+                    // User is already logged in, redirect to dashboard
+                    window.location.href = 'dashboard.html';
+                }
+            } catch (error) {
+                console.log('Not authenticated or error checking auth');
+            }
+        });
+
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
@@ -143,6 +161,7 @@
                     headers: {
                         'Content-Type': 'application/json',
                     },
+                    credentials: 'include', // Include cookies in requests
                     body: JSON.stringify({ username, password })
                 });
 
@@ -151,16 +170,22 @@
                 if (response.ok) {
                     messageDiv.textContent = 'Inicio de sesión exitoso';
                     messageDiv.className = 'message success';
-                    // Aquí podrías redirigir al usuario o realizar otras acciones
+                    messageDiv.style.display = 'block';
+                    
+                    // Redirect to dashboard after successful login
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 1500);
                 } else {
                     messageDiv.textContent = data.message || 'Error al iniciar sesión';
                     messageDiv.className = 'message error';
+                    messageDiv.style.display = 'block';
                 }
             } catch (error) {
                 messageDiv.textContent = 'Error de conexión';
                 messageDiv.className = 'message error';
+                messageDiv.style.display = 'block';
             }
-            messageDiv.style.display = 'block';
         });
     </script>
 </body>
