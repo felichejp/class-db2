@@ -28,7 +28,7 @@ const pool = new pg.Pool({
 });
 
 // Session configuration
-const SESSION_DURATION =  30 * 1000; // 30 seconds in milliseconds
+const SESSION_DURATION = 60 * 1000; // 1 minute in milliseconds
 
 // Utility function to create session
 async function createSession(userId, ipAddress, userAgent) {
