@@ -73,12 +73,12 @@ async function registrarUsuario(event) {
     // Preparar datos para enviar al backend
     const datosUsuario = {
         username: username,
-        nombre: nombre,
-        apellido: apellido,
+        name: nombre,
+        lastname: apellido,
         email: email,
-        password: password
+        password: password,
+        rol: '1'
     };
-    
     try {
         // Realizar llamada POST al backend
         const response = await fetch(`${BASE_URL}/register`, {
@@ -128,7 +128,6 @@ async function iniciarSesion(event) {
     mostrarLoading('mensajeLogin');
     await new Promise(resolve => setTimeout(resolve, 2000));
     
-    // Preparar datos para enviar al backend
     const datosLogin = {
         email: email,
         password: password
@@ -136,20 +135,19 @@ async function iniciarSesion(event) {
     
     try {
         console.log('Iniciando sesión', datosLogin);
-        // Realizar llamada POST al backend
         const response = await fetch(`${BASE_URL}/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(datosLogin)
+            body: JSON.stringify(datosLogin),
+            credentials: 'include' // Asegura que la cookie se incluya
         });
         
         const resultado = await response.json();
         console.log('Resultado de la petición', resultado);
         
         if (response.ok) {
-            // Login exitoso
             const mensaje = resultado.user ? 
                 `Bienvenido ${resultado.user.nombre} ${resultado.user.apellido} (${resultado.user.username})` :
                 'Inicio de sesión exitoso';
@@ -157,22 +155,24 @@ async function iniciarSesion(event) {
             mostrarMensaje('mensajeLogin', mensaje);
             document.getElementById('loginForm').reset();
             
-            // Aquí puedes almacenar el token si el backend lo envía
             if (resultado.token) {
                 localStorage.setItem('authToken', resultado.token);
                 console.log('Token guardado:', resultado.token);
             }
-            
+
+            // 🔽 Redirige al usuario a la página protegida
+            window.location.href = 'protegida.html';
+
         } else {
-            // Error de autenticación
             mostrarMensaje('mensajeLogin', resultado.error || 'Email o contraseña incorrectos', true);
         }
-        
+
     } catch (error) {
         console.error('Error en la petición:', error);
         mostrarMensaje('mensajeLogin', 'Error de conexión con el servidor. Verifica que el backend esté funcionando.', true);
     }
 }
+
 
 // Función para limpiar formulario de registro
 function limpiarFormulario() {
@@ -203,6 +203,30 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('Script cargado correctamente');
     console.log('Backend URL configurado:', BASE_URL);
 });
+
+
+// Función para verificar acceso a la ruta protegida
+async function verificarRutaProtegida() {
+    try {
+        const response = await fetch(`${BASE_URL}/protected`, {
+            method: 'GET',
+            credentials: 'include'  // Esto es CLAVE para que se envíen las cookies
+        });
+
+        const resultado = await response.json();
+        console.log('Respuesta de ruta protegida:', resultado);
+
+        if (response.ok) {
+            alert(`Acceso autorizado: ${JSON.stringify(resultado.user)}`);
+        } else {
+            alert(`Acceso denegado: ${resultado.error}`);
+        }
+
+    } catch (error) {
+        console.error('Error al acceder a ruta protegida:', error);
+        alert(' Error al conectar con el servidor');
+    }
+}
 
 /*
 NOTAS PARA EL BACKEND:

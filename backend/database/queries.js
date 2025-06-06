@@ -1,33 +1,34 @@
 const queries = [
   {
     name: 'login',
-    description: 'Authenticate user with username and password',
+    description: 'Authenticate user with email and password',
     query: `
       SELECT
-          u.id,
-          u.user_name,
-          u.name,
-          crypt($2, p.password) = p.password AS ispassok
-      FROM users u
-      INNER JOIN passwords p ON u.id = p.idUser
-      WHERE u.email = $1
-      ORDER BY p.id DESC
-      LIMIT 1
-      ;
+    u.id,
+    u.email,
+    u.name,
+    u.lastname,
+    u.username,
+    crypt($2, p.password) = p.password AS ispassok
+FROM users u
+INNER JOIN passwords p ON u.id = p.idUser
+WHERE u.email = $1
+ORDER BY p.id DESC
+LIMIT 1;
     `
   },
   {
     name: 'create_user',
     description: 'Create a new user',
     query: `
-      INSERT INTO users (user_name, rol, name, lastname) VALUES ($1, $2, $3, $4);
+      INSERT INTO users (username, rol, name, lastname, email) VALUES ($1, $2, $3, $4, $5) RETURNING *;
     `
   },
   {
     name: 'create_password',
     description: 'Create a new password',
     query: `
-      INSERT INTO passwords (idUser, password) VALUES ($1, $2));
+      INSERT INTO passwords (idUser, password) VALUES ($1, crypt($2, gen_salt('bf'))) RETURNING *;
     `
   },
   {
