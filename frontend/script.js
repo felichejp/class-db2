@@ -151,8 +151,8 @@ async function iniciarSesion(event) {
         if (response.ok) {
             // Login exitoso
             const mensaje = resultado.user ? 
-                `Bienvenido ${resultado.user.nombre} ${resultado.user.apellido} (${resultado.user.username})` :
-                'Inicio de sesión exitoso';
+                `Bienvenido ${resultado.user.name} ${resultado.user.lastname} (${resultado.user.user_name})` :
+                'Error al iniciar sesión';
             
             mostrarMensaje('mensajeLogin', mensaje);
             document.getElementById('loginForm').reset();
@@ -203,6 +203,17 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('Script cargado correctamente');
     console.log('Backend URL configurado:', BASE_URL);
 });
+
+
+function readToken() {
+    const token = localStorage.getItem('authToken');
+    if (token) {
+        console.log('Token encontrado:', token);
+    } else {
+        console.log('No se encontró token');
+    }
+    return token;
+}
 
 /*
 NOTAS PARA EL BACKEND:

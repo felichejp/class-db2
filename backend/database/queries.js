@@ -45,10 +45,23 @@ const queries = [
     `
   },
   {
-    name: 'get_token',
-    description: 'Get a token',
+    name: 'find_token',
+    description: 'Get a token by token',
     query: `
-      SELECT * FROM tokens WHERE idUser = $1;
+      SELECT
+        *
+      FROM user_tokens ut
+      WHERE ut.token = $1;
+    `
+  },
+  {
+    name: 'create_user_token',
+    description: 'Create a new user token',
+    query: `
+      INSERT INTO
+        user_tokens
+        (idUser, token, expires)
+      VALUES ($1, $2, $3);
     `
   }
 ];

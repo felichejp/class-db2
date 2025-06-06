@@ -23,15 +23,20 @@ app.post('/login', async(req, res) => {
     return;
   }
   const client = await connect();
-  const result = await queryLogin(client, { email, password });
+  const user = await queryLogin(client, { email, password });
 
   if (result && result.status === 200) {
-    const token = jwt.sign({ id: result.data.id }, secretKey, { expiresIn: '1h' });
-    console.log(token);
-    res.cookie('token', token, { httpOnly: true, secure: true, maxAge: 3600000 });
-    res.send(result);
+    //const token = jwt.sign({ id: result.data.id }, secretKey, { expiresIn: '1h' });
+    //console.log(token);
+    const token = generateToken();
+    const expires = new Date(Date.now() + 3600000); // 1 hora
+    const resultToken = await createUserToken(result.data.id, token, expires);
+    res.send({
+      user,
+      token: resultToken.token
+    });
   } else {
-    res.send(result);
+    res.send('Error');
   }
 })
 
