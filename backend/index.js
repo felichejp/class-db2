@@ -1,89 +1,68 @@
 const express = require('express');
 const dotenv = require('dotenv');
-const { connect, query } = require('./database/database');
-const fs = require('fs');
-const path = require('path');
+const cors = require('cors');
+const jwt = require('jsonwebtoken');
+const cookieParser = require('cookie-parser');
+
+const secretKey = 'my_secret_key';
+
+const { connect, queryLogin, queryNewUser } = require('./database/database');
 dotenv.config();
 
 const app = express()
 const port = 9000
+app.use(cors({ origin: '*' }));
 app.use(express.json())
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
-// Load queries from queries.json
-const queriesPath = path.join(__dirname, 'database', 'queries.json');
-const queries = JSON.parse(fs.readFileSync(queriesPath, 'utf8'));
-
-// Function to get query by name
-const getQueryByName = (name) => {
-  const queryObject = queries.find(q => q.name === name);
-  return queryObject ? queryObject.query : null;
-};
-
-app.post('/auth', async(req, res) => {
-  const { username, password } = req.body;
-  if( !username || !password ) {
+app.post('/login', async(req, res) => {
+  const { email, password } = req.body;
+  if( !email || !password ) {
     res.status(400).send("Username and password are required");
     return;
   }
-  console.log('BODY:', req.body); 
   const client = await connect();
-  
-  const result = await query(
-    `SELECT u.id, u.name, u.rol 
-     FROM users u 
-     JOIN passwords p ON u.id = p.iduser 
-     WHERE u."user" = $1 AND p.password = crypt($2, p.password)`,
-    [username, password],
-    client
-  );
-  
-  console.log('RESULT:', result.rows);
-  if (result && result.rows.length > 0) {
-    res.send("User authenticated");
+  const result = await queryLogin(client, { email, password });
+
+  if (result && result.status === 200) {
+    const token = jwt.sign({ id: result.data.id }, secretKey, { expiresIn: '1h' });
+    console.log(token);
+    res.cookie('token', token, { httpOnly: true, secure: true, maxAge: 3600000 });
+    res.send(result);
   } else {
-    res.send("User not authenticated");
+    res.send(result);
   }
 })
 
-app.post('/register', async(req, res) => {
-  const { username, firstName, lastName, email, password } = req.body;
-  
-  if(!username || !firstName || !lastName || !email || !password) {
-    res.status(400).send("All fields are required");
+app.post('/protected', async(req, res) => {
+  const token = req.cookies.token;
+  if (!token) {
+    res.status(401).send("Unauthorized");
     return;
   }
-  
   try {
-    const client = await connect();
-    const registerQuery = getQueryByName('register');
-    
-    if (!registerQuery) {
-      res.status(500).send("Registration query not found");
-      return;
-    }
-    
-    const result = await query(
-      registerQuery,
-      [username, firstName, lastName, email, password],
-      client
-    );
-    
-    console.log('REGISTRATION RESULT:', result.rows);
-    
-    if (result && result.rows.length > 0) {
-      res.send("User registered successfully");
-    } else {
-      res.status(500).send("Registration failed");
-    }
-  } catch (error) {
-    console.error('Registration error:', error);
-    if (error.code === '23505') { // Unique violation
-      res.status(409).send("Username or email already exists");
-    } else {
-      res.status(500).send("Registration failed: " + error.message);
-    }
+    const decoded = jwt.verify(token, secretKey);
+    res.send(`Welcome ${decoded.id}`);
+  } catch (err) {
+    res.status(401).send("Unauthorized");
   }
 });
+
+app.post('/register', async(req, res) => {
+  const { username, password, name, lastname, rol } = req.body;
+  if( !username || !password || !name || !lastname || !rol ) {
+    res.status(400).send("Username and password are required");
+    return;
+  }
+  const client = await connect();
+  const result = await queryNewUser(client, { username, password, name, lastname, rol });
+  if (result && result.status === 200) {
+    res.send(result);
+  } else {
+    res.send(result);
+  }
+})
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
