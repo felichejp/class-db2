@@ -50,13 +50,13 @@ app.post('/protected', async(req, res) => {
 });
 
 app.post('/register', async(req, res) => {
-  const { username, password, name, lastname, rol } = req.body;
-  if( !username || !password || !name || !lastname || !rol ) {
+  const { username, password, name, lastname, email } = req.body;
+  if( !username || !password || !name || !lastname || !email ) {
     res.status(400).send("Username and password are required");
     return;
   }
   const client = await connect();
-  const result = await queryNewUser(client, { username, password, name, lastname, rol });
+  const result = await queryNewUser(client, { username, password, name, lastname, email });
   if (result && result.status === 200) {
     res.send(result);
   } else {

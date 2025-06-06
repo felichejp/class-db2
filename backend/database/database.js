@@ -50,35 +50,42 @@ async function queryLogin(client, { email, password }) {
   }
 }
 
-async function queryNewUser(client, { username, password, name, lastname, rol }) {
-  const query = queries.find(q => q.name === 'create_user').query;
-  const params = [username, rol, name, lastname];
-  const res = await client.query(query, params);
-  if (res.rows && res.rows.length === 0) {
-    response = {
-      status: 401,
-      message: 'Unauthorized',
-      data: null
+async function queryNewUser(client, { username, password, name, lastname, email }) {
+  const createUserQuery = queries.find(q => q.name === 'create_user').query;
+  const createPasswordQuery = queries.find(q => q.name === 'create_password').query;
+
+  try {
+    await client.query('BEGIN'); // Inicia transacción
+
+    // Insertar en users
+    const userResult = await client.query(createUserQuery, [username, name, lastname, email]);
+    if (userResult.rowCount === 0) {
+      throw new Error('User insertion failed');
     }
-    return response;
-  }
-  const queryPassword = queries.find(q => q.name === 'create_password').query;
-  const paramsPassword = [res.rows[0].id, password];
-  const resPassword = await client.query(queryPassword, paramsPassword);
-  if (resPassword.rows && resPassword.rows.length === 0) {
-    response = {
-      status: 401,
-      message: 'Unauthorized',
-      data: null
+
+    const userId = userResult.rows[0].id;
+
+    // Insertar contraseña relacionada
+    const passwordResult = await client.query(createPasswordQuery, [userId, password]);
+    if (passwordResult.rowCount === 0) {
+      throw new Error('Password insertion failed');
     }
-    return response;
+
+    await client.query('COMMIT'); // Confirma transacción
+
+    return {
+      status: 200,
+      message: 'User created',
+      data: { id: userId, username, name, lastname, email }
+    };
+  } catch (error) {
+    await client.query('ROLLBACK'); // Reversión si algo falla
+    return {
+      status: 500,
+      message: `Error during user creation: ${error.message}`,
+      data: null
+    };
   }
-  response = {
-    status: 200,
-    message: 'User created',
-    data: res.rows[0]
-  }
-  return response;
 }
 
 // Exportar funciones
