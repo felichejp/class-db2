@@ -49,10 +49,11 @@ const queries = [
     `
   },
   {
-    name: 'get_token',
-    description: 'Get a token',
+    name: 'fin_token',
+    description: 'Get a token by token',
     query: `
-      SELECT * FROM tokens WHERE idUser = $1;
+      SELECT * FROM tokens ut
+      WHERE ut.token = $1;
     `
   }
 ];

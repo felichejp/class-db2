@@ -28,10 +28,6 @@ async function validateToken(receivedToken) {
     return { valid: true, user_id: tokenRecord.user_id };
 }
 
-// Ejemplo de uso
-const token = generateToken();
-console.log('Token generado:', token);
-
 // Exportar la función para uso en otros archivos
 module.exports = { generateToken };
 

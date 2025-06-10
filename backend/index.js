@@ -11,7 +11,6 @@ dotenv.config();
 
 const app = express()
 const port = 9000
-//app.use(cors({ origin: '*' }));
 app.use(cors({
   origin: 'http://127.0.0.1:5500', // O el que te muestre Live Server
   credentials: true
@@ -71,3 +70,10 @@ app.post('/register', async(req, res) => {
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
+
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught Exception:', err);
+});
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection:', reason);
+});
