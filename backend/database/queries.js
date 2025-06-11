@@ -21,7 +21,9 @@ const queries = [
     name: 'create_user',
     description: 'Create a new user',
     query: `
-      INSERT INTO users ("user", rol, name, lastname,email) VALUES ($1, $2, $3, $4, $5);
+      INSERT INTO users ("user", rol, name, lastname, email) 
+      VALUES ($1, $2, $3, $4, $5)
+      RETURNING *;
     `
   },
   {

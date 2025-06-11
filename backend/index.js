@@ -33,7 +33,7 @@ app.post('/login', async(req, res) => {
       httpOnly: true, 
       secure: false, 
       maxAge: 3600000,
-      sameSite: 'Lax'  // Add this
+      sameSite: 'Lax'
     });
     res.send(result);
   } else {

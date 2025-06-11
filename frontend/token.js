@@ -2,11 +2,7 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const cors = require('cors');
-
 const app = express();
-
-// INSTALAR DEPENDENCIAS:
-// npm install express jsonwebtoken bcryptjs cors
 
 app.use(cors());
 app.use(express.json());

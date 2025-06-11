@@ -11,9 +11,7 @@ async function connect () {
       user: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
-      /*ssl: {
-        rejectUnauthorized: false
-      }*/
+
   });
   await client.connect() // Conectar a la base de datos
   console.log('Conneted to database') // Mostrar mensaje en consola
@@ -81,7 +79,6 @@ async function queryNewUser(client, { username, password, name, lastname, rol, e
   return response;
 }
 
-// Exportar funciones
 module.exports = {
   connect,
   queryLogin,

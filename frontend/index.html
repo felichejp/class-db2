@@ -91,12 +91,11 @@
             <button type="submit">Iniciar Sesión</button>
         </form>
         <div class="register-link">
-            <a href="/register">¿No tienes una cuenta? ¡Registrate!</a>
+            <a href="registro.html">¿No tienes una cuenta? ¡Registrate!</a>
         </div>
     </div>
 
     <script>
-        // Display error message if present in URL parameters
         window.onload = function() {
             const urlParams = new URLSearchParams(window.location.search);
             const error = urlParams.get('error');
@@ -108,7 +107,6 @@
         }
     </script>
     
-    <!-- Add this line to include your JavaScript file -->
     <script src="index.js"></script>
 </body>
 </html>
