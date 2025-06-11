@@ -5,6 +5,7 @@ const BASE_URL = 'http://localhost:9000';
 function mostrarMensaje(elementoId, mensaje, esError = false) {
     const elemento = document.getElementById(elementoId);
     if (elemento) {
+        elemento.style.display = 'block'; // <-- Asegura que se muestre
         elemento.innerHTML = esError ? 
             '<p style="color: red;"><strong>Error:</strong> ' + mensaje + '</p>' : 
             '<p style="color: green;"><strong>Éxito:</strong> ' + mensaje + '</p>';
@@ -15,8 +16,14 @@ function mostrarMensaje(elementoId, mensaje, esError = false) {
 function limpiarMensajes() {
     const mensaje = document.getElementById('mensaje');
     const mensajeLogin = document.getElementById('mensajeLogin');
-    if (mensaje) mensaje.innerHTML = '';
-    if (mensajeLogin) mensajeLogin.innerHTML = '';
+    if (mensaje) {
+        mensaje.innerHTML = '';
+        mensaje.style.display = 'none';
+    }
+    if (mensajeLogin) {
+        mensajeLogin.innerHTML = '';
+        mensajeLogin.style.display = 'none';
+    }
 }
 
 // Función para validar email
@@ -138,7 +145,7 @@ async function iniciarSesion(event) {
     try {
         console.log('Iniciando sesión', datosLogin);
         // Realizar llamada POST al backend
-        const response = await fetch(`${BASE_URL}/login`,{
+        const response = await fetch(`${BASE_URL}/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -158,10 +165,13 @@ async function iniciarSesion(event) {
             mostrarMensaje('mensajeLogin', mensaje);
             document.getElementById('loginForm').reset();
             
-            // Aquí puedes almacenar el token si el backend lo envía
+            // Guarda el token y los datos del usuario
             if (resultado.token) {
                 localStorage.setItem('authToken', resultado.token);
+                localStorage.setItem('userData', JSON.stringify(resultado.user));
                 console.log('Token guardado:', resultado.token);
+                // Redirigir a la página privada
+                window.location.href = 'private.html';
             }
             
         } else {
@@ -200,11 +210,83 @@ document.addEventListener('DOMContentLoaded', function() {
     if (loginForm) {
         loginForm.addEventListener('submit', iniciarSesion);
     }
+
+    // Para la página privada
+    const contenidoPrivado = document.getElementById('contenidoPrivado');
+    if (contenidoPrivado) {
+        verificarSesion();
+        mostrarDatosUsuario();
+    }
     
     console.log('Script cargado correctamente');
     console.log('Backend URL configurado:', BASE_URL);
 });
 
+function mostrarDatosUsuario() {
+    const userData = localStorage.getItem('userData');
+    if (userData) {
+        const user = JSON.parse(userData);
+        const nameSpan = document.getElementById('userNameSpan');
+        const emailSpan = document.getElementById('userEmailSpan');
+        const idSpan = document.getElementById('userIdSpan');
+        const tokenSpan = document.getElementById('userTokenSpan');
+        if (nameSpan) nameSpan.textContent = user.nombre + ' ' + (user.apellido || '');
+        if (emailSpan) emailSpan.textContent = user.email;
+        if (idSpan) idSpan.textContent = user.username || user.id || '';
+        if (tokenSpan) tokenSpan.textContent = localStorage.getItem('authToken');
+    }
+}
+
+// Función para verificar si hay sesión activa
+function verificarSesion() {
+    const token = readToken();
+    if (!token) {
+        window.location.href = 'login.html';
+    } else {
+        const contenido = document.getElementById('contenidoPrivado');
+        if (contenido) {
+            contenido.style.display = 'block';
+        }
+    }
+}
+
+function readToken(){
+    const token = localStorage.getItem('authToken');
+    if (token) {
+        console.log('Token encontrado:', token);
+    } else {
+        console.log('No se encontró token');
+    }
+    return token;
+}
+
+function revoke() {
+    const token = localStorage.getItem('authToken');
+    if (token) {
+        fetch(`${BASE_URL}/revoke-token`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ token })
+        })
+        .then(response => response.json())
+        .then(data => {
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('userData');
+            console.log('Token revocado y eliminado del almacenamiento local');
+            window.location.href = 'login.html';
+        })
+        .catch(() => {
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('userData');
+            window.location.href = 'login.html';
+        });
+    } else {
+        window.location.href = 'login.html';
+    }
+}
+window.revoke = revoke; // Exponer la función revoke para uso en el HTML
 /*
 NOTAS PARA EL BACKEND:
 

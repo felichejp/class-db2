@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Área Privada - Base de Datos II</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+</head>
+<body>
+    <div class="private-container">
+        <div class="private-content-container">
+            <div class="private-content-card">
+                <h2>Área Privada</h2>
+                <h3>Base de Datos II - Información de Usuario</h3>
+                
+                <div id="contenidoPrivado" style="display:none;" class="user-info">
+                    <h4><i class="bi bi-person-badge"></i> Información del Usuario</h4>
+                    <div class="info-item">
+                        <span class="info-label">Nombre de Usuario:</span>
+                        <span id="userNameSpan" class="info-value"></span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Correo Electrónico:</span>
+                        <span id="userEmailSpan" class="info-value"></span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">ID de Usuario:</span>
+                        <span id="userIdSpan" class="info-value"></span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Token:</span>
+                        <span id="userTokenSpan" class="info-value token-value"></span>
+                    </div>
+                </div>
+
+                <div id="message" class="alert-message"></div>
+                
+                <div class="buttons-container">
+                    <button id="revokeButton" onclick="revoke()" class="danger-button">
+                        <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
+                    </button>
+                    
+                    <a href="index.html" class="back-link">
+                        <button type="button" class="secondary-button">
+                            <i class="bi bi-arrow-left"></i> Volver al Inicio
+                        </button>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+<style>
+    body, html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        font-family: Arial, sans-serif;
+        background-color: #e8f4f8;
+    }
+    
+    .private-container {
+        height: 100vh;
+        margin: 0;
+        padding: 0;
+        overflow-y: auto;
+    }
+
+    .private-content-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 2rem 0;
+    }
+
+    .private-content-card {
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(56, 125, 172, 0.15);
+        padding: 2rem;
+        width: 100%;
+        max-width: 600px;
+        border-top: 4px solid #4a6fa5;
+    }
+
+    h2 {
+        text-align: center;
+        margin-bottom: 0.5rem;
+        color: #2c3e50;
+    }
+    
+    h3 {
+        text-align: center;
+        margin-bottom: 1.5rem;
+        color: #4a6fa5;
+        font-weight: normal;
+        font-size: 1.1rem;
+    }
+    
+    h4 {
+        color: #2c3e50;
+        margin-bottom: 1.2rem;
+        border-bottom: 1px solid #e0e9f0;
+        padding-bottom: 0.5rem;
+    }
+
+    .user-info {
+        background-color: #f8fbfd;
+        border-radius: 6px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        border: 1px solid #c5d8e8;
+    }
+    
+    .info-item {
+        margin-bottom: 0.8rem;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .info-label {
+        font-weight: bold;
+        color: #4a6fa5;
+        margin-bottom: 0.2rem;
+    }
+    
+    .info-value {
+        color: #2c3e50;
+        word-break: break-all;
+    }
+    
+    .token-value {
+        font-family: monospace;
+        font-size: 0.9rem;
+        background-color: #edf6ff;
+        padding: 0.3rem;
+        border-radius: 4px;
+    }
+    
+    .alert-message {
+        background-color: #fae3e3;
+        color: #f75151;
+        border: 1px solid #f75151;
+        border-radius: 4px;
+        padding: 0.8rem;
+        margin-bottom: 1rem;
+        text-align: center;
+        display: none;
+    }
+    
+    .buttons-container {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        margin-top: 1.5rem;
+    }
+
+    .danger-button, .secondary-button {
+        padding: 0.8rem;
+        border: none;
+        border-radius: 4px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+    
+    .danger-button {
+        background-color: #e74c3c;
+        color: white;
+    }
+    
+    .danger-button:hover {
+        background-color: #c0392b;
+    }
+    
+    .secondary-button {
+        background-color: #4a6fa5;
+        color: white;
+    }
+    
+    .secondary-button:hover {
+        background-color: #395987;
+    }
+    
+    @media (max-width: 768px) {
+        .private-content-card {
+            width: 90%;
+            padding: 1.5rem;
+        }
+        
+        .info-item {
+            flex-direction: column;
+        }
+    }
+    
+    @media (min-width: 768px) {
+        .info-item {
+            flex-direction: row;
+            gap: 0.5rem;
+        }
+        
+        .info-label {
+            min-width: 160px;
+        }
+        
+        .buttons-container {
+            flex-direction: row;
+            justify-content: space-between;
+        }
+        
+        .danger-button, .secondary-button {
+            min-width: 200px;
+        }
+    }
+</style>
+</html>
