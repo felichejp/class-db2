@@ -6,16 +6,18 @@ const cookieParser = require('cookie-parser');
 
 const secretKey = 'my_secret_key';
 
-const { connect, queryLogin, queryNewUser } = require('./database/database');
+const { connect, queryLogin, queryNewUser, findTokenInDB, createUserToken } = require('./database/database');
+const { generateToken } = require('./secure/secure');
 dotenv.config();
 
 const app = express()
 const port = 9000
-app.use(cors({
+/*app.use(cors({
   origin: 'http://127.0.0.1:5500', // O el que te muestre Live Server
   credentials: true
-}));
-app.use(express.json())
+})); */
+app.use(cors({ origin : '*' }));
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
@@ -26,15 +28,21 @@ app.post('/login', async(req, res) => {
     return;
   }
   const client = await connect();
-  const result = await queryLogin(client, { email, password });
+  const user = await queryLogin(client, { email, password });
 
-  if (result && result.status === 200) {
-    const token = jwt.sign({ id: result.data.id }, secretKey, { expiresIn: '1h' });
-    console.log('Token generado',token);
-    res.cookie('token', token, { httpOnly: true, secure: false, maxAge: 3600000 });
-    res.send(result);
+  if (user && user.status === 200) {
+    //const token = jwt.sign({ id: result.data.id }, secretKey, { expiresIn: '1h' });
+    //console.log('Token generado',token);
+    //res.cookie('token', token, { httpOnly: true, secure: false, maxAge: 3600000 });
+    const token = generateToken();
+    const expires = new Date(Date.now() + 3600000); // 1 hora
+    const resultToken = await createUserToken(client, { idUser : user.data.id , token, expires });
+    res.send({
+      user,
+      token: resultToken.token
+    });
   } else {
-    res.send(result);
+    res.send(user);
   }
 })
 
@@ -70,10 +78,3 @@ app.post('/register', async(req, res) => {
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
-
-process.on('uncaughtException', (err) => {
-  console.error('Uncaught Exception:', err);
-});
-process.on('unhandledRejection', (reason, promise) => {
-  console.error('Unhandled Rejection:', reason);
-});

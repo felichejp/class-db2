@@ -143,8 +143,7 @@ async function iniciarSesion(event) {
                 'Content-Type': 'application/json',
             },
            
-            body: JSON.stringify(datosLogin),
-             credentials: 'include'
+            body: JSON.stringify(datosLogin)
         });
         
         const resultado = await response.json();
@@ -176,6 +175,18 @@ async function iniciarSesion(event) {
     }
 }
 
+function verificarSesionPrivada() {
+    const token = readToken();
+    if (!token) {
+        window.location.href = 'login.html';
+    } else {
+        const contenido = document.getElementById('contenidoPrivado');
+        if (contenido) {
+            contenido.style.display = 'block';
+        }
+    }
+}
+
 // Función para limpiar formulario de registro
 function limpiarFormulario() {
     document.getElementById('registroForm').reset();
@@ -186,6 +197,11 @@ function limpiarFormulario() {
 function limpiarLogin() {
     document.getElementById('loginForm').reset();
     limpiarMensajes();
+}
+
+function cerrarSesion() {
+    localStorage.removeItem('authToken');
+    window.location.href = 'login.html';
 }
 
 // Event listeners cuando el DOM esté cargado
@@ -201,10 +217,26 @@ document.addEventListener('DOMContentLoaded', function() {
     if (loginForm) {
         loginForm.addEventListener('submit', iniciarSesion);
     }
+
+    // Para la página privada
+    const contenidoPrivado = document.getElementById('contenidoPrivado');
+    if (contenidoPrivado) {
+        verificarSesionPrivada();
+    }
     
     console.log('Script cargado correctamente');
     console.log('Backend URL configurado:', BASE_URL);
 });
+
+function readToken() {
+    const token = localStorage.getItem('authToken');
+    if (token) {
+        console.log('Token encontrado:', token);
+    } else {
+        console.log('No se encontró token');
+    }
+    return token;
+}
 
 /*
 NOTAS PARA EL BACKEND:

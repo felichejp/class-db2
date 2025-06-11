@@ -20,7 +20,6 @@ async function connect () {
   return client // Retornar cliente
 }
 
-// Función para realizar consultas
 async function queryLogin(client, { email, password }) {
   const loginUserQuery = queries.find(q => q.name === 'login').query;
   const params = [email, password];
@@ -88,9 +87,25 @@ async function queryNewUser(client, { username, password, name, lastname, email 
   }
 }
 
+async function findTokenInDB(client, { token }) {
+  const query = queries.find(q => q.name === 'find_token').query;
+  const params = [token];
+  const res = await client.query(query, params);
+  return res.rows[0];
+}
+
+async function createUserToken(client, { idUser, token, expires }) {
+  const query = queries.find(q => q.name === 'create_user_token').query;
+  const params = [idUser, token, expires];
+  const res = await client.query(query, params);
+  return res.rows[0];
+}
+
 // Exportar funciones
 module.exports = {
   connect,
   queryLogin,
-  queryNewUser
+  queryNewUser,
+  findTokenInDB,
+  createUserToken
 }

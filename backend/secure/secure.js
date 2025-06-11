@@ -30,4 +30,3 @@ async function validateToken(receivedToken) {
 
 // Exportar la función para uso en otros archivos
 module.exports = { generateToken };
-

@@ -55,6 +55,17 @@ const queries = [
       SELECT * FROM tokens ut
       WHERE ut.token = $1;
     `
+  },
+  {
+    name: 'create_user_token',
+    description: 'Create a new user token',
+    query: `
+      INSERT INTO
+        user_tokens
+        (idUser, token, expires)
+      VALUES ($1, $2, $3)
+      RETURNING token;
+    `
   }
 ];
 
