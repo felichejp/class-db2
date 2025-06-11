@@ -5,7 +5,7 @@ const queries = [
     query: `
       SELECT
           u.id,
-          u.user_name,
+          u.user,
           u.name,
           crypt($2, p.password) = p.password AS ispassok
       FROM users u
@@ -20,7 +20,7 @@ const queries = [
     name: 'create_user',
     description: 'Create a new user',
     query: `
-      INSERT INTO users (user_name, rol, name, lastname) VALUES ($1, $2, $3, $4);
+      INSERT INTO users (user, rol, name, lastname) VALUES ($1, $2, $3, $4);
     `
   },
   {
