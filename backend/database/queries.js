@@ -51,18 +51,50 @@ const queries = [
       INSERT INTO access (idUser, typeAccess, ip) VALUES ($1, $2, $3);
     `
   },
-  {
-    name: 'create_token',
+{
+    name: 'create_user_token',
     description: 'Create a new token',
     query: `
-      INSERT INTO tokens (idUser, token) VALUES ($1, $2);
+      INSERT INTO user_tokens (idUser, token, expires) VALUES ($1, $2, $3);
     `
   },
   {
-    name: 'get_token',
-    description: 'Get a token',
+    name: 'find_token_by_iduser',
+    description: 'Get a token by idUSer',
     query: `
-      SELECT * FROM tokens WHERE idUser = $1;
+      SELECT
+        *
+      FROM user_tokens ut
+      WHERE ut.idUser = $1;
+    `
+  },
+  {
+    name: 'find_token',
+    description: 'Get a token by token',
+    query: `
+      SELECT
+        *
+      FROM user_tokens ut
+      WHERE ut.token = $1;
+    `
+  },
+  {
+    name: 'create_user_token',
+    description: 'Create a new user token',
+    query: `
+      INSERT INTO
+        user_tokens
+        (idUser, token, expires)
+      VALUES ($1, $2, $3);
+    `
+  },
+  {
+    name: 'revoke_token',
+    description: 'Revoke token by token',
+    query: `
+      UPDATE user_tokens ut
+      SET revoke = true
+      WHERE ut.token = $1;
     `
   }
 ];

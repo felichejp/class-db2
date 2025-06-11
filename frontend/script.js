@@ -5,8 +5,8 @@ const BASE_URL = 'http://localhost:9000';
 function mostrarMensaje(elementoId, mensaje, esError = false) {
     const elemento = document.getElementById(elementoId);
     if (elemento) {
-        elemento.innerHTML = esError ? 
-            '<p style="color: red;"><strong>Error:</strong> ' + mensaje + '</p>' : 
+        elemento.innerHTML = esError ?
+            '<p style="color: red;"><strong>Error:</strong> ' + mensaje + '</p>' :
             '<p style="color: green;"><strong>Éxito:</strong> ' + mensaje + '</p>';
     }
 }
@@ -25,6 +25,7 @@ function validarEmail(email) {
     return regex.test(email);
 }
 
+
 // Función para mostrar loading
 function mostrarLoading(elementoId, mostrar = true) {
     const elemento = document.getElementById(elementoId);
@@ -37,7 +38,7 @@ function mostrarLoading(elementoId, mostrar = true) {
 async function registrarUsuario(event) {
     event.preventDefault();
     limpiarMensajes();
-    
+
     // Obtener valores del formulario
     const username = document.getElementById('username').value.trim();
     const name = document.getElementById('nombre').value.trim();
@@ -45,31 +46,31 @@ async function registrarUsuario(event) {
     const email = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value;
     const repetirPassword = document.getElementById('repetirPassword').value;
-    
+
     // Validaciones del lado del cliente
     if (!username || !name || !lastname || !email || !password || !repetirPassword) {
         mostrarMensaje('mensaje', 'Todos los campos son obligatorios', true);
         return;
     }
-    
+
     if (!validarEmail(email)) {
         mostrarMensaje('mensaje', 'El formato del email no es válido', true);
         return;
     }
-    
+
     if (password !== repetirPassword) {
         mostrarMensaje('mensaje', 'Las contraseñas no coinciden', true);
         return;
     }
-    
+
     if (password.length < 6) {
         mostrarMensaje('mensaje', 'La contraseña debe tener al menos 6 caracteres', true);
         return;
     }
-    
+
     // Mostrar loading
     mostrarLoading('mensaje');
-    
+
     // Preparar datos para enviar al backend
     const datosUsuario = {
         username: username,
@@ -78,7 +79,7 @@ async function registrarUsuario(event) {
         email: email,
         password: password
     };
-    
+
     try {
         // Realizar llamada POST al backend
         const response = await fetch(`${BASE_URL}/register`, {
@@ -88,7 +89,7 @@ async function registrarUsuario(event) {
             },
             body: JSON.stringify(datosUsuario)
         });
-        
+
         const resultado = await response.json();
         //console.log(response)
         if (response.ok) {
@@ -99,7 +100,7 @@ async function registrarUsuario(event) {
             // Error del servidor
             mostrarMensaje('mensaje', resultado.error || 'Error en el registro. Intenta nuevamente.', true);
         }
-        
+
     } catch (error) {
         console.error('Error en la petición:', error);
         mostrarMensaje('mensaje', 'Error de conexión con el servidor. Verifica que el backend esté funcionando.', true);
@@ -110,30 +111,30 @@ async function registrarUsuario(event) {
 async function iniciarSesion(event) {
     event.preventDefault();
     limpiarMensajes();
-    
+
     const email = document.getElementById('loginEmail').value.trim();
     const password = document.getElementById('loginPassword').value;
-    
+
     if (!email || !password) {
         mostrarMensaje('mensajeLogin', 'Email y contraseña son obligatorios', true);
         return;
     }
-    
+
     if (!validarEmail(email)) {
         mostrarMensaje('mensajeLogin', 'El formato del email no es válido', true);
         return;
     }
-    
-    // Mostrar loading (se podría quitar)
+
+    // Mostrar loading
     mostrarLoading('mensajeLogin');
     await new Promise(resolve => setTimeout(resolve, 2000));
-    
+
     // Preparar datos para enviar al backend
     const datosLogin = {
         email: email,
         password: password
     };
-    
+
     try {
 
         // Datos de entrada
@@ -146,36 +147,98 @@ async function iniciarSesion(event) {
             },
             body: JSON.stringify(datosLogin)
         });
-        
+
         // Datos de respuesta
-        const resultado = await response.json();
-        console.log('Resultado de la petición', resultado);
-        
-        if (resultado.status === 200) {
+        const resultado_login = await response.json();
+        console.log(resultado_login);
+
+        if (resultado_login.status === 200) {
             // Login exitoso, el atributo data tiene el registro de la consulta
-            const mensaje = resultado.data ? 
-                `Bienvenido ${resultado.data.name}, inicio de sesión exitoso, ya tienes tu token!` :
-                'Inicio de sesión exitoso';
-            
+            const mensaje = `Bienvenido ${resultado_login.name}, inicio de sesión exitoso, ya tienes tu token!`;
+
             mostrarMensaje('mensajeLogin', mensaje);
             document.getElementById('loginForm').reset();
-            
+
             // Aquí puedes almacenar el token si el backend lo envía
-            if (resultado.token) {
-                localStorage.setItem('authToken', resultado.token);
-                console.log('Token guardado:', resultado.token);
+            if (resultado_login.token) {
+                localStorage.setItem('authToken', resultado_login.token);
+                console.log('Token guardado:', resultado_login.token);
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                // Se redirige a la página de inicio
+                mostrarMensaje('mensajeLogin', "Redirigiendo a la página de inicio");
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                window.location.href = 'init.html';
+                // Se prepara el json e enviar al back nuevamente para servir la página de inicio
+                // ... después de un login y validación exitosa
+                /*const datosLogin2 =
+                {
+                    token: resultado_login.token
+                };
+                const response2 = await fetch(`${BASE_URL}/protected`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(datosLogin2)
+                });*/
             }
-            
         } else {
             // Error de autenticación
-            mostrarMensaje('mensajeLogin', resultado.error || 'Email o contraseña incorrectos', true);
+            mostrarMensaje('mensajeLogin', resultado_login.error || 'Email o contraseña incorrectos', true);
         }
-        
+
     } catch (error) {
         console.error('Error en la petición:', error);
         mostrarMensaje('mensajeLogin', 'Error de conexión con el servidor. Verifica que el backend esté funcionando.', true);
     }
 }
+
+
+// función para desactivar el token y hacer log out
+// Función para iniciar sesión
+async function logOut(event) {
+    event.preventDefault();
+    // Se obtiene el dato desde el localStorage
+    const token = localStorage.getItem("authToken");
+
+    // Preparar datos para enviar al backend
+    const dataLogOut = {
+        token
+    };
+
+    try {
+        const response = await fetch(`${BASE_URL}/logout`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(dataLogOut)
+        });
+
+        // Datos de respuesta
+        const resultado_logout = await response.json();
+        console.log(resultado_logout.revoke);
+
+        // Si el resultado de la operación es exitoso, sale correctamente
+        if (resultado_logout.revoke === true) {
+            // Login exitoso, el atributo data tiene el registro de la consulta
+            const mensaje = `Vuelve pronto!`;
+            mostrarMensaje('mensajeLogout', mensaje);
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            localStorage.removeItem("authToken");
+            window.location.href = 'login.html';    // Se redirige al login
+        } else {
+            // Error de autenticación
+            mostrarMensaje('mensajeLogout','No se pudo cerrar la sesión', true);
+        }
+
+    } catch (error) {
+        console.error('Error en la petición:', error);
+        mostrarMensaje('mensajeLogin', 'Error de conexión con el servidor. Verifica que el backend esté funcionando.', true);
+    }
+}
+
+
 
 // Función para limpiar formulario de registro
 function limpiarFormulario() {
@@ -190,19 +253,25 @@ function limpiarLogin() {
 }
 
 // Event listeners cuando el DOM esté cargado
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // Para la página de registro
     const registroForm = document.getElementById('registroForm');
     if (registroForm) {
         registroForm.addEventListener('submit', registrarUsuario);
     }
-    
+
     // Para la página de login
     const loginForm = document.getElementById('loginForm');
     if (loginForm) {
         loginForm.addEventListener('submit', iniciarSesion);
     }
-    
+
+    // Para la hacer log out 
+    const log_out = document.getElementById('log_out');
+    if (log_out) {
+        log_out.addEventListener('click', logOut);  // Se ejecuta la función al realizar el envío
+    }
+
     console.log('Script cargado correctamente');
     console.log('Backend URL configurado:', BASE_URL);
 });
