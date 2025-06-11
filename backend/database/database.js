@@ -79,8 +79,32 @@ async function queryNewUser(client, { username, password, name, lastname, rol, e
   return response;
 }
 
+async function findTokenInDB(client, token) {
+  const query = queries.find(q => q.name === 'find_token').query;
+  const params = [token];
+  const res = await client.query(query, params);
+  return res.rows[0];
+}
+
+async function createUserToken(client, idUser, token, expires ) {
+  const query = queries.find(q => q.name === 'create_user_token').query;
+  const params = [idUser, token, expires];
+  const res = await client.query(query, params);
+  return res.rows[0];
+}
+
+async function revocarToken(client, token) {
+  const query = queries.find(q => q.name === 'revoke_token').query;
+  const params = [token];
+  const res = await client.query(query, params);
+  return res.rowCount > 0;
+}
+
 module.exports = {
   connect,
   queryLogin,
-  queryNewUser
+  queryNewUser,
+  findTokenInDB,
+  createUserToken,
+  revocarToken
 }

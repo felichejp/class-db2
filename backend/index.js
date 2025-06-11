@@ -6,7 +6,10 @@ const cookieParser = require('cookie-parser');
 
 const secretKey = "my_secret_key";
 
-const { connect, queryLogin, queryNewUser } = require('./database/database');
+const { connect, queryLogin, queryNewUser, createUserToken, revocarToken } = require('./database/database');
+const { generateToken } = require('./database/secure/secure');
+
+/* const { connect, queryLogin, queryNewUser } = require('./database/database'); */
 dotenv.config();
 
 const app = express()
@@ -21,23 +24,27 @@ app.use(cookieParser());
 app.post('/login', async(req, res) => {
   const { email, password } = req.body;
   if( !email || !password ) {
-    res.status(400).send("Username and password are required");
-    return;
+    return res.status(400).json({ error: "Email y contraseña son obligatorios" });
   }
   const client = await connect();
   const result = await queryLogin(client, { email, password });
   if (result && result.status === 200) {
-    const token = jwt.sign({ id: result.data.id }, secretKey, { expiresIn: '1h' });
-    console.log(token);
-    res.cookie('token', token, { 
-      httpOnly: true, 
-      secure: false, 
-      maxAge: 3600000,
-      sameSite: 'Lax'
+    const token = generateToken();
+    const expires = new Date(Date.now() + 3600000); //1 hora
+    const resultToken = await createUserToken(client, result.data.id, token, expires);
+    const user = {
+      username: result.data.user,
+      nombre: result.data.name,
+      apellido: result.data.lastname || "",
+      email: result.data.email,
+    };
+    return res.status(200).json({
+      message: 'Login exitoso',
+      user,
+      token: resultToken.token
     });
-    res.send(result);
   } else {
-    res.send(result);
+    return res.status(401).json({ error: "Email o contraseña incorrectos" });
   }
 })
 
@@ -69,6 +76,20 @@ app.post('/register', async(req, res) => {
     res.send(result);
   }
 })
+
+app.post('/revoke-token', async (req, res) => {
+  const { token } = req.body;
+  if (!token) {
+    return res.status(400).json({ error: "Token requerido" });
+  }
+  const client = await connect();
+  const revoked = await revocarToken(client, token);
+  if (revoked) {
+    res.json({ message: "Token revocado correctamente" });
+  } else {
+    res.status(404).json({ error: "Token no encontrado o ya revocado" });
+  }
+});
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)

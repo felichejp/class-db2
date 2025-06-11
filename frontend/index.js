@@ -15,8 +15,14 @@ function mostrarMensaje(elementoId, mensaje, esError = false) {
 function limpiarMensajes() {
     const mensaje = document.getElementById('mensaje');
     const mensajeLogin = document.getElementById('mensajeLogin');
-    if (mensaje) mensaje.innerHTML = '';
-    if (mensajeLogin) mensajeLogin.innerHTML = '';
+    if (mensaje) {
+        mensaje.innerHTML = '';
+        mensaje.style.display = 'none';
+    }
+    if (mensajeLogin) {
+        mensajeLogin.innerHTML = '';
+        mensajeLogin.style.display = 'none';
+    }
 }
 
 // Función para validar email
@@ -167,7 +173,7 @@ async function iniciarSesion(event) {
             
             // Add redirection after successful login
             setTimeout(() => {
-                window.location.href = 'login.html';
+                window.location.href = 'private.html';
             }, 1500);
             
         } else {
@@ -206,39 +212,80 @@ document.addEventListener('DOMContentLoaded', function() {
     if (loginForm) {
         loginForm.addEventListener('submit', iniciarSesion);
     }
+
+    // Para la pagina privada
+    const contenidoPrivado = document.getElementById('contenidoPrivado');
+    if (contenidoPrivado) {
+        verificarSesion();
+        mostrarDatosUsuario();
+    }
     
     console.log('Script cargado correctamente');
     console.log('Backend URL configurado:', BASE_URL);
 });
 
-/*
-NOTAS PARA EL BACKEND:
+function mostrarDatosUsuario() {
+    const userData = localStorage.getItem('userData');
+    if (userData) {
+        const user = JSON.parse(userData);
+        const nameSpan = document.getElementById('userNameSpan');
+        const emailSpan = document.getElementById('userEmailSpan');
+        const idSpan = document.getElementById('userIdSpan');
+        const tokenSpan = document.getElementById('userTokenSpan');
+        if (nameSpan) nameSpan.textContent = user.nombre + ' ' + (user.apellido || '');
+        if (emailSpan) emailSpan.textContent = user.email;
+        if (idSpan) idSpan.textContent = user.username || user.id || '';
+        if (tokenSpan) tokenSpan.textContent = localStorage.getItem('authToken');
+    }
+}
 
-1. RUTA DE REGISTRO (POST /register):
-   - Debe recibir: { username, nombre, apellido, email, password }
-   - Debe validar: email único, username único, datos requeridos
-   - Respuesta exitosa: { message: "Usuario registrado exitosamente" }
-   - Respuesta de error: { error: "Mensaje de error específico" }
+// Función para verificar si hay sesión activa
+function verificarSesion() {
+    const token = readToken();
+    if (!token) {
+        window.location.href = 'login.html';
+    } else {
+        const contenido = document.getElementById('contenidoPrivado');
+        if (contenido) {
+            contenido.style.display = 'block';
+        }
+    }
+}
 
-2. RUTA DE LOGIN (POST /login):
-   - Debe recibir: { email, password }
-   - Debe validar: credenciales contra base de datos
-   - Respuesta exitosa: { 
-       message: "Login exitoso", 
-       user: { username, nombre, apellido, email },
-       token: "jwt_token_aqui" (opcional)
-     }
-   - Respuesta de error: { error: "Email o contraseña incorrectos" }
+function readToken(){
+    const token = localStorage.getItem('authToken');
+    if (token) {
+        console.log('Token encontrado:', token);
+    } else {
+        console.log('No se encontró token');
+    }
+    return token;
+}
 
-3. CÓDIGOS DE RESPUESTA HTTP:
-   - 200: Éxito
-   - 400: Error de validación
-   - 401: No autorizado (login fallido)
-   - 409: Conflicto (email/username ya existe)
-   - 500: Error del servidor
-
-4. CORS:
-   - Configurar CORS para permitir peticiones desde el frontend
-   - Permitir headers: Content-Type, Authorization
-   - Permitir métodos: POST, GET, OPTIONS
-*/
+function revoke() {
+    const token = localStorage.getItem('authToken');
+    if (token) {
+        fetch(`${BASE_URL}/revoke-token`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ token })
+        })
+        .then(response => response.json())
+        .then(data => {
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('userData');
+            console.log('Token revocado y eliminado del almacenamiento local');
+            window.location.href = 'login.html';
+        })
+        .catch(() => {
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('userData');
+            window.location.href = 'login.html';
+        });
+    } else {
+        window.location.href = 'login.html';
+    }
+}
+window.revoke = revoke; // Exponer la función revoke para uso en el HTML

@@ -44,14 +44,36 @@ const queries = [
     name: 'create_token',
     description: 'Create a new token',
     query: `
-      INSERT INTO tokens (idUser, token, expires) VALUES ($1, $2, $3);
+      INSERT INTO tokens (idUsers, token, expires) VALUES ($1, $2, $3);
+    `
+  },
+ {
+    name: 'find_token',
+    description: 'Get a token by token',
+    query: `
+      SELECT
+        *
+      FROM user_tokens ut
+      WHERE ut.token = $1;
     `
   },
   {
-    name: 'get_token',
-    description: 'Get a token',
+    name: 'create_user_token',
+    description: 'Create a new user token',
     query: `
-      SELECT * FROM tokens WHERE idUser = $1;
+      INSERT INTO
+        user_tokens
+        (idUsers, token, expires)
+      VALUES ($1, $2, $3) RETURNING *;
+    `
+  },
+  {
+    name: 'revoke_token',
+    description: 'Revoke a token by token',
+    query: `
+      UPDATE user_tokens
+      SET revoked = true
+      WHERE token = $1;
     `
   }
 ];
