@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Área Privada - Base de Datos II</title>
+</head>
+<body>
+    <h1>Área Privada - Base de Datos II</h1>
+
+    <div id="contenidoPrivado" style="display:none;">
+        <h2>Información del Usuario</h2>
+        <p>Nombre de Usuario: <span id="userNameSpan"></span></p>
+        <p>Correo Electrónico: <span id="userEmailSpan"></span></p>
+        <p>ID de Usuario: <span id="userIdSpan"></span></p>
+        <p>Token: <span id="userTokenSpan"></span></p>  
+    </div>
+
+    <button id="revokeButton" onclick="revoke()">Revocar Token (Cerrar Sesión)</button>
+
+    <div id="message"></div>
+
+    <br>
+    <a href="login.html">
+        <button type="button">Volver al Inicio</button>
+    </a>
+    <script src="script.js"></script>
+</body>
+</html>

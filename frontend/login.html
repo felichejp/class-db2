@@ -46,23 +46,7 @@
         </form>
       </div>
     </div>
-    <div class="text-center mt-3">
-      <button id="btnProtected" class="btn btn-outline-primary" type="button">
-        Probar ruta protegida
-      </button>
-      <div id="respuestaProtected" class="mt-2"></div>
-    </div>
     <script src="script.js"></script>
-    <script>
-      document.getElementById('btnProtected').onclick = async function() {
-        const res = await fetch('http://localhost:9000/protected', {
-          method: 'POST',
-          credentials: 'include'
-        });
-        const text = await res.text();
-        document.getElementById('respuestaProtected').innerText = text;
-      };
-    </script>
 </body>
 </html>
 <style>
