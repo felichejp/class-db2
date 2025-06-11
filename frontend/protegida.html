@@ -5,10 +5,20 @@
   <title>Zona Protegida</title>
 </head>
 <body>
-  <h1>Zona Protegida</h1>
+  <h1>Has iniciado sesion correctamente </h1>
   <button onclick="verificarRutaProtegida()">Probar Ruta Protegida</button>
+  <button onclick="cerrarSesion()">cerrar sesion</button>
   <p id="resultadoProtegido"></p>
 
   <script src="script.js"></script>
 </body>
 </html>
+
+<script>
+  function cerrarSesion() {
+    fetch('/logout', { method: 'POST' })
+      .then(() => {
+        window.location.href = '/';
+      });
+  }
+</script>

@@ -160,7 +160,7 @@ async function iniciarSesion(event) {
                 console.log('Token guardado:', resultado.token);
             }
 
-            // 🔽 Redirige al usuario a la página protegida
+            // Redirige al usuario a la página protegida
             window.location.href = 'protegida.html';
 
         } else {
@@ -225,6 +225,20 @@ async function verificarRutaProtegida() {
     } catch (error) {
         console.error('Error al acceder a ruta protegida:', error);
         alert(' Error al conectar con el servidor');
+    }
+}
+//accion al dar click
+async function cerrarSesion() {
+    try {
+      const response = await fetch('http://localhost:9000/logout', {
+        method: 'POST',
+        credentials: 'include'
+      });
+  
+      const data = await response.json();
+      document.getElementById('resultadoProtegido').innerText = data.message || data.error;
+    } catch (error) {
+      console.error('Error al cerrar sesión:', error);
     }
 }
 

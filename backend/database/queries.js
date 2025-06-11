@@ -10,11 +10,11 @@ const queries = [
     u.lastname,
     u.username,
     crypt($2, p.password) = p.password AS ispassok
-FROM users u
-INNER JOIN passwords p ON u.id = p.idUser
-WHERE u.email = $1
-ORDER BY p.id DESC
-LIMIT 1;
+    FROM users u
+    INNER JOIN passwords p ON u.id = p.idUser
+    WHERE u.email = $1
+    ORDER BY p.id DESC
+    LIMIT 1;
     `
   },
   {
@@ -39,17 +39,32 @@ LIMIT 1;
     `
   },
   {
-    name: 'create_token',
-    description: 'Create a new token',
+    name: 'find_token',
+    description: 'Get a token by token',
     query: `
-      INSERT INTO tokens (idUser, token) VALUES ($1, $2);
+      SELECT
+        *
+      FROM tokens ut
+      WHERE ut.token = $1;
     `
   },
   {
-    name: 'get_token',
-    description: 'Get a token',
+    name: 'create_user_token',
+    description: 'Create a new user token',
     query: `
-      SELECT * FROM tokens WHERE idUser = $1;
+      INSERT INTO
+        tokens
+        (idUsers, token, expires)
+      VALUES ($1, $2, $3);
+    `
+  },
+  {
+    name: 'revoke_token',
+    description: 'cambiar a true el campo revoked',
+    query: `
+      UPDATE tokens
+      SET revoked = true
+      WHERE token = $1;
     `
   }
 ];

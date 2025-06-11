@@ -81,9 +81,34 @@ async function queryNewUser(client, { username, password, name, lastname, rol, e
   return response;
 }
 
+async function findTokenInDB(client, {token}) {
+  const query = queries.find(q => q.name === 'find_token').query;
+  const params = [token];
+  const res = await client.query(query, params);
+  return res.rows[0];
+}
+
+async function createUserToken(client, {idUsers, token, expires} ) {
+  const query = queries.find(q => q.name === 'create_user_token').query;
+  const params = [idUsers, token, expires];
+  const res = await client.query(query, params);
+  return res.rows[0];
+}
+
+async function revokeToken(client, { token }) {
+  const query = queries.find(q => q.name === 'revoke_token').query;
+  const params = [token];
+  const res = await client.query(query, params);
+  return res.rows[0];
+}
+
+
 // Exportar funciones
 module.exports = {
   connect,
   queryLogin,
-  queryNewUser
+  queryNewUser,
+  createUserToken,
+  findTokenInDB,
+  revokeToken
 }
