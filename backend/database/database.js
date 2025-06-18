@@ -11,9 +11,7 @@ async function connect () {
       user: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
-      ssl: {
-        rejectUnauthorized: false
-      }
+
   });
   await client.connect() // Conectar a la base de datos
   console.log('Conneted to database') // Mostrar mensaje en consola
@@ -50,9 +48,9 @@ async function queryLogin(client, { email, password }) {
   }
 }
 
-async function queryNewUser(client, { username, password, name, lastname, rol }) {
+async function queryNewUser(client, { username, password, name, lastname, rol, email }) {
   const query = queries.find(q => q.name === 'create_user').query;
-  const params = [username, rol, name, lastname];
+  const params = [username, rol, name, lastname, email];
   const res = await client.query(query, params);
   if (res.rows && res.rows.length === 0) {
     response = {
@@ -81,7 +79,6 @@ async function queryNewUser(client, { username, password, name, lastname, rol })
   return response;
 }
 
-// Exportar funciones
 module.exports = {
   connect,
   queryLogin,

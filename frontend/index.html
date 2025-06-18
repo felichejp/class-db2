@@ -1,80 +1,147 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Base de Datos II</title>
+    <title>Inicio de Sesión</title>
     <style>
         body {
-            background-color: #000;
-            color: #00ff00;
-            font-family: 'Courier New', Courier, monospace;
+            font-family: 'Share Tech Mono', 'Consolas', monospace;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
+            background: #101a12;
+            color: #7afc7a;
         }
-        .terminal {
-            background-color: #000;
-            border: 2px solid #00ff00;
+        .login-container {
+            background: rgba(16, 26, 18, 0.98);
             padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 0 24px #0f3d0f, 0 0 2px #7afc7a inset;
             width: 100%;
-            max-width: 700px;
-            box-shadow: 0 0 15px #00ff00;
+            max-width: 400px;
+            border: 1.5px solid #3a5c3a;
         }
-        h1, h2, p, footer {
+        h1 {
             text-align: center;
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
+            color: #7afc7a;
+            text-shadow: 0 0 8px #3a5c3a;
         }
-        h1, h2 {
-            font-size: 1.2rem;
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: #a6ffb6;
+            text-shadow: 0 0 2px #3a5c3a;
+        }
+        input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #3a5c3a;
+            border-radius: 4px;
+            box-sizing: border-box;
+            background: #1a2d1a;
+            color: #7afc7a;
+            font-family: inherit;
+            font-size: 1rem;
+            outline: none;
+        }
+        input:focus {
+            border-color: #7afc7a;
+            box-shadow: 0 0 8px #7afc7a44;
         }
         button {
+            width: 100%;
             padding: 0.75rem;
-            background-color: black;
-            border: 1px solid #00ff00;
-            color: #00ff00;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 1rem;
+            background: #183c18;
+            color: #7afc7a;
+            border: 1.5px solid #3a5c3a;
+            border-radius: 4px;
             cursor: pointer;
-            margin: 0.25rem;
+            font-size: 1rem;
+            font-family: inherit;
+            text-shadow: 0 0 4px #3a5c3a;
+            transition: background 0.2s, color 0.2s;
         }
         button:hover {
-            background-color: #003300;
+            background: #224d22;
+            color: #a6ffb6;
         }
-        .green-glow {
-            text-shadow: 0 0 5px #00ff00, 0 0 10px #00ff00;
-        }
-        a {
-            display: inline-block;
+        .error-message {
+            color: #ff4f4f;
             text-align: center;
+            margin-bottom: 1rem;
+            display: none;
         }
-        hr {
-            border-color: #00ff00;
+        .register-link {
+            text-align: center;
+            margin-top: 1rem;
+        }
+        .register-link a {
+            color: #7afc7a;
+            text-decoration: none;
+            text-shadow: 0 0 2px #3a5c3a;
+        }
+        .register-link a:hover {
+            text-decoration: underline;
+            color: #a6ffb6;
+        }
+        /* Efecto scanlines sutil */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            pointer-events: none;
+            background: repeating-linear-gradient(
+                to bottom,
+                rgba(122,252,122,0.02) 0px,
+                rgba(122,252,122,0.02) 1px,
+                transparent 1px,
+                transparent 4px
+            );
+            z-index: 1;
         }
     </style>
 </head>
 <body>
-    <div class="terminal">
-        <h1 class="green-glow">Bienvenido al registro de usuarios de Base de Datos II - Proyecto 1</h1>
-        
-        <h2 class="green-glow">Accede a tu cuenta</h2>
-        <p>Si ya tienes una cuenta, puedes iniciar sesión aquí:</p>
-        <a href="login.html">
-            <button type="button" class="green-glow">Iniciar Sesión</button>
-        </a>
-        
-        <h2 class="green-glow">¿Eres un usuario nuevo?</h2>
-        <p>Si es tu primera vez, regístrate para crear tu cuenta:</p>
-        <a href="registro.html">
-            <button type="button" class="green-glow">Registrarse</button>
-        </a>
-        
-        <hr>
-        <footer>
-            <p>© 2025 FIE DB2</p>
-        </footer>
+    <div class="login-container">
+        <h1>Inicio de Sesión</h1>
+        <div id="errorMessage" class="error-message"></div>
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="loginEmail">Email</label>
+                <input type="email" id="loginEmail" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="loginPassword">Contraseña</label>
+                <input type="password" id="loginPassword" name="password" required>
+            </div>
+            <div id="mensajeLogin"></div>
+            <button type="submit">Iniciar Sesión</button>
+        </form>
+        <div class="register-link">
+            <a href="registro.html">¿No tienes una cuenta? ¡Registrate!</a>
+        </div>
     </div>
+
+    <script>
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const error = urlParams.get('error');
+            if (error) {
+                const errorElement = document.getElementById('errorMessage');
+                errorElement.textContent = error;
+                errorElement.style.display = 'block';
+            }
+        }
+    </script>
+    
+    <script src="index.js"></script>
 </body>
 </html>

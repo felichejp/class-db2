@@ -3,111 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iniciar Sesión</title>
+    <title>Bienvenido</title>
     <style>
         body {
-            background-color: #000;
-            color: #00ff00;
-            font-family: 'Courier New', Courier, monospace;
+            font-family: 'Share Tech Mono', 'Consolas', monospace;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
+            background: #101a12;
+            color: #7afc7a;
         }
-        .terminal {
-            background-color: #000;
-            border: 2px solid #00ff00;
+        .welcome-container {
+            background: rgba(16, 26, 18, 0.98);
             padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 0 24px #0f3d0f, 0 0 2px #7afc7a inset;
             width: 100%;
-            max-width: 600px;
-            box-shadow: 0 0 15px #00ff00;
+            max-width: 400px;
+            border: 1.5px solid #3a5c3a;
+            text-align: center;
         }
         h1 {
-            font-size: 1.2rem;
-            text-align: center;
+            margin-bottom: 1.5rem;
+            color: #7afc7a;
+            text-shadow: 0 0 8px #3a5c3a;
+        }
+        .welcome-message {
             margin-bottom: 2rem;
+            font-size: 1.1rem;
+            color: #a6ffb6;
+            text-shadow: 0 0 2px #3a5c3a;
         }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 1rem;
-        }
-        td {
-            padding: 0.5rem;
-            color: #00ff00;
-        }
-        input {
-            width: 100%;
-            background-color: black;
-            border: 1px solid #00ff00;
-            color: #00ff00;
-            padding: 0.5rem;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 1rem;
+        .button-container {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
         }
         button {
-            padding: 0.75rem;
-            background-color: black;
-            border: 1px solid #00ff00;
-            color: #00ff00;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 1rem;
+            padding: 0.75rem 1.5rem;
+            background: #183c18;
+            color: #7afc7a;
+            border: 1.5px solid #3a5c3a;
+            border-radius: 4px;
             cursor: pointer;
-            margin: 0.25rem;
+            font-size: 1rem;
+            font-family: inherit;
+            text-shadow: 0 0 4px #3a5c3a;
+            transition: background 0.2s, color 0.2s;
+        }
+        button.logout {
+            background: #224d22;
+            color: #ff4f4f;
+            border-color: #3a5c3a;
         }
         button:hover {
-            background-color: #003300;
+            background: #224d22;
+            color: #a6ffb6;
         }
-        .green-glow {
-            text-shadow: 0 0 5px #00ff00, 0 0 10px #00ff00;
-        }
-        #mensajeLogin {
-            text-align: center;
-            margin-top: 1rem;
-            color: red;
-        }
-        a button {
-            width: 100%;
+        /* Efecto scanlines sutil */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            pointer-events: none;
+            background: repeating-linear-gradient(
+                to bottom,
+                rgba(122,252,122,0.02) 0px,
+                rgba(122,252,122,0.02) 1px,
+                transparent 1px,
+                transparent 4px
+            );
+            z-index: 1;
         }
     </style>
 </head>
 <body>
-    <div class="terminal">
-        <h1 class="green-glow">Iniciar Sesión</h1>
-        
-        <form id="loginForm">
-            <table border="1">
-                <tr>
-                    <td><label for="loginEmail" class="green-glow">Email:</label></td>
-                    <td><input type="email" id="loginEmail" name="loginEmail" required></td>
-                </tr>
-                <tr>
-                    <td><label for="loginPassword" class="green-glow">Password:</label></td>
-                    <td><input type="password" id="loginPassword" name="loginPassword" required></td>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                        <button type="submit" class="green-glow">Iniciar Sesión</button>
-                        <button type="button" onclick="limpiarLogin()" class="green-glow">Limpiar</button>
-                    </td>
-                </tr>
-            </table>
-        </form>
-        
-        <div id="mensajeLogin"></div>
-        
-        <br>
-        <a href="index.html">
-            <button type="button" class="green-glow">Volver al Inicio</button>
-        </a>
-        
-        <br><br>
-        <a href="registro.html">
-            <button type="button" class="green-glow">¿No tienes cuenta? Registrarse</button>
-        </a>
+    <div class="welcome-container">
+        <h1>Bienvenido</h1>
+        <div id="welcomeMessage" class="welcome-message">
+            ¡Hola <span id="username"></span>! Has iniciado sesión correctamente.
+        </div>
+        <div class="button-container">
+            <button class="logout" onclick="logout()">Cerrar Sesión</button>
+        </div>
     </div>
-    
-    <script src="script.js"></script>
+
+    <script>
+        function logout() {
+            // Limpia cualquier dato de sesión/localStorage
+            localStorage.clear();
+            sessionStorage.clear();
+            window.location.href = 'index.html';
+        }
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const username = urlParams.get('username');
+            if (username) {
+                document.getElementById('username').textContent = username;
+            }
+        }
+    </script>
 </body>
 </html>

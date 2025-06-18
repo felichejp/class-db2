@@ -4,14 +4,16 @@ const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 
-const secretKey = 'my_secret_key';
+const secretKey = "my_secret_key";
 
 const { connect, queryLogin, queryNewUser } = require('./database/database');
 dotenv.config();
 
 const app = express()
 const port = 9000
-app.use(cors({ origin: '*' }));
+app.use(cors({ origin: 'http://localhost:5500', 
+  credentials: true, methods: ['POST', 'GET', 'OPTIONS']
+ }));
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -24,11 +26,15 @@ app.post('/login', async(req, res) => {
   }
   const client = await connect();
   const result = await queryLogin(client, { email, password });
-
   if (result && result.status === 200) {
     const token = jwt.sign({ id: result.data.id }, secretKey, { expiresIn: '1h' });
     console.log(token);
-    res.cookie('token', token, { httpOnly: true, secure: true, maxAge: 3600000 });
+    res.cookie('token', token, { 
+      httpOnly: true, 
+      secure: false, 
+      maxAge: 3600000,
+      sameSite: 'Lax'
+    });
     res.send(result);
   } else {
     res.send(result);
@@ -50,13 +56,13 @@ app.post('/protected', async(req, res) => {
 });
 
 app.post('/register', async(req, res) => {
-  const { username, password, name, lastname, rol } = req.body;
-  if( !username || !password || !name || !lastname || !rol ) {
-    res.status(400).send("Username and password are required");
+  const { username, password, name, lastname, email, rol } = req.body;
+  if( !username || !password || !name || !lastname ||  !email || !rol ) {
+    res.status(400).json({ error: "Faltan datos para completar el registro" });
     return;
   }
   const client = await connect();
-  const result = await queryNewUser(client, { username, password, name, lastname, rol });
+  const result = await queryNewUser(client, { username, password, name, lastname,  rol, email });
   if (result && result.status === 200) {
     res.send(result);
   } else {
